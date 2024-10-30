@@ -4,7 +4,7 @@ interface IProps {
   className?: string;
 }
 
-function renderSection6(props: IProps) {
+function RenderSection6(props: IProps) {
   return (
     <section className="flex flex-col min-h-[526px] mb-[17px]">
       <div className="flex flex-col bg-[rgb(30,30,47)] overflow-hidden">
@@ -105,4 +105,4 @@ function renderSection6(props: IProps) {
   );
 }
 
-export default renderSection6;
+export default RenderSection6;

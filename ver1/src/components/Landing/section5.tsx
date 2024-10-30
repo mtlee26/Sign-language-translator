@@ -1,10 +1,15 @@
 import React from 'react';
-
+import { useHistory } from 'react-router-dom';
 interface IProps {
   className?: string;
 }
 
-function renderSection5(props: IProps) {
+function RenderSection5(props: IProps) {
+  const history = useHistory(); 
+
+  const handleLoginClick = () => {
+    history.push('/login'); 
+  };
   return (
     <section className="flex flex-col z-[1] relative">
       <div className="bg-[rgb(30,30,47)] w-[1440px] h-[221px] absolute left-0 bottom-0" />
@@ -112,7 +117,8 @@ function renderSection5(props: IProps) {
 
             <button className="bg-[rgb(30,30,47)] rounded-lg pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 min-w-[230px]">
               {/* TODO */}
-              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
+              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px" 
+               onClick={handleLoginClick}  >
                 Get started now
               </p>
               <img className="w-6 min-w-0" src={'/assets/9a492b13b04238b64597d6cd1d66e897.png'} alt="alt text" />
@@ -124,4 +130,4 @@ function renderSection5(props: IProps) {
   );
 }
 
-export default renderSection5;
+export default RenderSection5;

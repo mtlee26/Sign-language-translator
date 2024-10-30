@@ -45,7 +45,8 @@ const RenderSection1: React.FC<IProps> = (props) => {
 
             <button className="bg-[rgb(30,30,47)] rounded-lg w-[230px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full">
               {/* TODO */}
-              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
+              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
+              onClick={handleLoginClick}  >
                 Get Started Now
               </p>
               <img className="w-6 min-w-0" src={'/assets/9a492b13b04238b64597d6cd1d66e897.png'} alt="alt text" />

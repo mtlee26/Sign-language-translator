@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import cn from 'classnames';
-import { useHistory } from 'react-router-dom'; 
+import { useHistory } from 'react-router-dom';
 
 interface IProps {
   className?: string;
@@ -21,6 +20,12 @@ const Signup: React.FC<IProps> = (props) => {
     history.push('/login');
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -31,7 +36,6 @@ const Signup: React.FC<IProps> = (props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
     console.log('Form Data:', formData);
   };
 
@@ -64,7 +68,6 @@ const Signup: React.FC<IProps> = (props) => {
             </p>
 
             <form className="w-full flex flex-col gap-y-6 mt-12" onSubmit={handleSubmit}>
-              {/* User information input form group */}
               <div className="xs:gap-x-4 xxs:grid-cols-[repeat(1,_minmax(0,_1fr))] grid grid-cols-[repeat(2,_minmax(0,_1fr))] content-start gap-y-6 gap-x-6">
                 {/* Input Fields */}
                 {[
@@ -72,12 +75,12 @@ const Signup: React.FC<IProps> = (props) => {
                   { label: 'Last Name', name: 'lastName', type: 'text' },
                   { label: 'Email', name: 'email', type: 'email' },
                   { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
-                  { label: 'Password', name: 'password', type: 'password' },
-                  { label: 'Confirm Password', name: 'confirmPassword', type: 'password' },
+                  { label: 'Password', name: 'password', type: showPassword ? 'text' : 'password' },
+                  { label: 'Confirm Password', name: 'confirmPassword', type: showPassword ? 'text' : 'password' },
                 ].map(({ label, name, type }) => (
-                  <div key={name} className="flex flex-col relative row-span-1 column-span-1">
+                  <div key={name} className="flex flex-col relative">
                     <input
-                      className="bg-white rounded outline outline-[rgb(121,116,126)] outline-1 outline-offset-[-1px] relative min-h-[56px] px-3"
+                      className="bg-white rounded outline outline-[rgb(121,116,126)] outline-1 outline-offset-[-1px] relative min-h-[56px] px-3 pr-14"
                       type={type}
                       name={name}
                       value={formData[name as keyof typeof formData]}
@@ -85,6 +88,14 @@ const Signup: React.FC<IProps> = (props) => {
                       placeholder={label}
                       required
                     />
+                    {(name === 'password' || name === 'confirmPassword') && (
+                      <img
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 cursor-pointer"
+                        src="/assets/d483db8daa47f60f8b8df3a652230b66.svg"
+                        alt="Show/Hide Password"
+                        onClick={togglePasswordVisibility}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -110,39 +121,35 @@ const Signup: React.FC<IProps> = (props) => {
               <p className="flex justify-center mt-4">
                 <span className="font-bold text-[14px] leading-[1.28] font-PlusJakartaSans text-black text-center">
                   <span className="font-bold text-[rgb(48,48,48)]">Already have an account? </span>
-                  <span className="font-bold text-[rgb(255,134,130)] cursor-pointer"
-                    onClick={handleLoginClick}
-                    >Login</span>
+                  <span className="font-bold text-[rgb(255,134,130)] cursor-pointer" onClick={handleLoginClick}>
+                    Login
+                  </span>
                 </span>
               </p>
             </form>
 
             <div className="sm:flex-col sm:items-center sm:gap-y-[30px] flex gap-x-4 mt-10">
-              <hr
-                className="sm:w-full sm:m-0 bg-[rgb(49,49,49)] w-[199px] h-px opacity-[0.25] min-h-[1px] mt-[9px] mb-2"
-              />
+              <hr className="sm:w-full sm:m-0 bg-[rgb(49,49,49)] w-[199px] h-px opacity-[0.25] min-h-[1px] mt-[9px] mb-2" />
               <div className="sm:w-full font-normal text-[14px] leading-[1.28] font-PlusJakartaSans text-[rgb(49,49,49)] opacity-[0.5]">
                 Or Sign up with
-                </div>
-              <hr
-                className="sm:w-full sm:m-0 bg-[rgb(49,49,49)] w-[198px] h-px opacity-[0.25] min-h-[1px] mt-[9px] mb-2"
-              />
+              </div>
+              <hr className="sm:w-full sm:m-0 bg-[rgb(49,49,49)] w-[198px] h-px opacity-[0.25] min-h-[1px] mt-[9px] mb-2" />
             </div>
 
-            <div className="xxs:flex-col xxs:items-center xxs:gap-y-[30px] w-full flex gap-x-4 mt-10">
+            <div className="tn:flex-col tn:items-center tn:gap-y-[30px] tn:gap-x-2 flex gap-x-4 mt-10">
               {/* Social media login options */}
               <img
-                className="xxs:w-full xxs:min-w-[unset] xxs:max-w-[203px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-[203px] object-cover min-w-0"
+                className="tn:w-full tn:min-w-[unset] tn:max-w-[160px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-40 object-cover min-w-0"
                 src={'/assets/de9f3005456292fe90e42f79e20e10dc.svg'}
                 alt="alt text"
               />
               <img
-                className="xxs:w-full xxs:min-w-[unset] xxs:max-w-[202px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-[202px] object-cover min-w-0"
+                className="tn:w-full tn:min-w-[unset] tn:max-w-[160px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-40 object-cover min-w-0"
                 src={'/assets/1e58727831e4d8eac8c2399d37191fbc.svg'}
                 alt="alt text"
               />
               <img
-                className="xxs:w-full xxs:min-w-[unset] xxs:max-w-[203px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-[203px] object-cover min-w-0"
+                className="tn:w-full tn:min-w-[unset] tn:max-w-[160px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-40 object-cover min-w-0"
                 src={'/assets/28d74fcb9395a994ef47ddfa4d563aeb.svg'}
                 alt="alt text"
               />
@@ -152,6 +159,6 @@ const Signup: React.FC<IProps> = (props) => {
       </div>
     </section>
   );
-}
+};
 
 export default Signup;

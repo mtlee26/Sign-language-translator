@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { useHistory } from 'react-router-dom'; 
-import Signup from 'components/Signup';
 
 interface IProps {
   className?: string;
