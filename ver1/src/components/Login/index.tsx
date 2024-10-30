@@ -17,6 +17,10 @@ function Login(props: IProps) {
   const handleSignUpClick = () => {
     history.push('/signup');
   };
+
+  const handleLoginClick = () => {
+    history.push('/dashboard');
+  }
   return (
     <section className={`login flex flex-col bg-white overflow-hidden ${props.className || ''}`}>
       <div className="xs:mt-[22px] xs:mr-0 xs:mb-20 xs:ml-[13px] tn:mt-[22px] tn:mx-auto tn:mb-[50px] w-[92.43%] flex flex-col gap-y-[50px] max-w-[1330.987548828125px] mt-[22px] mb-[91px] ml-[13px]">
@@ -94,8 +98,8 @@ function Login(props: IProps) {
               </a>
             </div>
 
-            <button className="flex justify-center font-bold text-[14px] leading-[1.28] font-PlusJakartaSans text-white text-center bg-[rgb(30,30,47)] rounded pt-[15px] pr-2 pb-[15px] pl-2 mt-10">
-              {/* TODO */}
+            <button className="flex justify-center font-bold text-[14px] leading-[1.28] font-PlusJakartaSans text-white text-center bg-[rgb(30,30,47)] rounded pt-[15px] pr-2 pb-[15px] pl-2 mt-10 cursor-pointer"
+            onClick={handleLoginClick} >
               Login
             </button>
             <div className="flex justify-center mt-4 mx-auto">

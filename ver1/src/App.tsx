@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-ro
 import Landing from './components/Landing';
 import Login from 'components/Login';
 import Signup from 'components/Signup';
+import Dashboard from 'components/Dashboard';
 import AOS from 'aos';
 import { isMobile } from 'react-device-detect';
 
@@ -30,6 +31,7 @@ function App() {
         <Route exact path="/Landing" component={Landing} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
+        <Route exact path="/dashboard" component={Dashboard} />
       </Switch>
 
     </Router>
