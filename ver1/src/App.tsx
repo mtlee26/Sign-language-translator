@@ -1,15 +1,22 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
-import Landing from './components/Landing';
-import Login from 'components/Login';
-import Signup from 'components/Signup';
-import Dashboard from 'components/Dashboard';
-import AOS from 'aos';
-import { isMobile } from 'react-device-detect';
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import Landing from "./components/Landing";
+import Login from "components/Login";
+import Signup from "components/Signup";
+import Dashboard from "components/Dashboard";
+import AOS from "aos";
+import { isMobile } from "react-device-detect";
 
-import 'aos/dist/aos.css';
-import './fonts.css';
-import './tailwind.css';
+import "aos/dist/aos.css";
+import "./fonts.css";
+import "./tailwind.css";
+import Translator1 from "components/Translator";
 
 function App() {
   useEffect(() => {
@@ -32,8 +39,8 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/translate" component={Translator1} />
       </Switch>
-
     </Router>
   );
 }
