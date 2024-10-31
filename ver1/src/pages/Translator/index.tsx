@@ -1,30 +1,44 @@
-import Layout from "Layout";
+import Layout from "Layout"; 
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import useSpeechRecognition from "hooks/useSpeechRecognitionHook";
 
 interface IProps {
   className?: string;
 }
 
 function Translator(props: IProps) {
+  const { text: recognizedText, isListening, startListening } = useSpeechRecognition();
+  const [text, setText] = useState(""); 
   const [mode, setMode] = useState("textToASL");
   const [buttonClicked, setButtonClicked] = useState("upload");
   const history = useHistory();
 
   useEffect(() => {
-    // Reset the state when the component mounts or URL changes
+    if (recognizedText) {
+      setText(recognizedText);
+    }
+  }, [recognizedText]);
+ 
+  useEffect(() => {
     const unlisten = history.listen((location) => {
       if (location.pathname === "/translate") {
         setMode("textToASL");
         setButtonClicked("upload");
       }
     });
-
-    // Cleanup the listener on unmount
     return () => {
       unlisten();
     };
   }, [history]);
+
+  const handleVoiceInputClick = () => {
+    if (isListening) {
+      setText(""); 
+    } else {
+      startListening();
+    }
+  };
 
   return (
     <Layout>
@@ -47,9 +61,7 @@ function Translator(props: IProps) {
             <div className="flex space-x-6 mb-12">
               <button
                 className={`flex items-center space-x-3 px-6 py-3 rounded-lg ${
-                  mode === "textToASL"
-                    ? "bg-[#D2E3FC] text-[#1A73E8]"
-                    : "border border-gray-300"
+                  mode === "textToASL" ? "bg-[#D2E3FC] text-[#1A73E8]" : "border border-gray-300"
                 }`}
                 onClick={() => setMode("textToASL")}
               >
@@ -62,9 +74,7 @@ function Translator(props: IProps) {
               </button>
               <button
                 className={`flex items-center space-x-3 px-6 py-3 rounded-lg ${
-                  mode === "ASLToText"
-                    ? "bg-[#D2E3FC] text-[#1A73E8]"
-                    : "border border-gray-300"
+                  mode === "ASLToText" ? "bg-[#D2E3FC] text-[#1A73E8]" : "border border-gray-300"
                 }`}
                 onClick={() => setMode("ASLToText")}
               >
@@ -83,10 +93,15 @@ function Translator(props: IProps) {
                   <textarea
                     className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
                     placeholder="Enter text here..."
+                    value={text} 
+                    onChange={(e) => setText(e.target.value)} 
                   ></textarea>
                   <div className="flex justify-between mt-6">
                     <div className="flex space-x-4">
-                      <button className="p-3 border border-gray-300 rounded-full">
+                      <button
+                        className="p-3 border border-gray-300 rounded-full"
+                        onClick={handleVoiceInputClick} 
+                      >
                         <img
                           src="https://cdn3.iconfinder.com/data/icons/random-icon-set/512/microphone-128.png"
                           alt="Voice input"
@@ -178,8 +193,8 @@ function Translator(props: IProps) {
                   <div className="flex justify-end space-x-4 mt-6">
                     <button className="p-3 border border-gray-300 rounded-full">
                       <img
-                        src="https://cdn3.iconfinder.com/data/icons/system-basic-vol-5/20/icon-speaker-loudness-sound-2-128.png"
-                        alt="Listen"
+                        src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-128.png"
+                        alt="Download"
                         className="w-6 h-6"
                       />
                     </button>
