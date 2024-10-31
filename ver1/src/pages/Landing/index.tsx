@@ -1,6 +1,3 @@
-import React from "react";
-import cn from "classnames";
-
 import { useHistory } from "react-router-dom";
 
 interface IProps {
@@ -192,7 +189,7 @@ function Landing(props: IProps) {
                       language into text or speech in real-time.
                     </p>
 
-                    <div className="flex gap-x-3">
+                    <div className="flex gap-x-3 items-center">
                       <p className="font-medium text-[18px] leading-[1.27] font-PlusJakartaSans text-[rgb(30,30,47)] capitalize min-w-0 mb-px">
                         Learn more
                       </p>
