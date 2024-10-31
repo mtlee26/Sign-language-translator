@@ -45,7 +45,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   const fetchVideo = (word: string) => {
-    // Giả lập tìm kiếm video
     const videoDatabase: { [key: string]: string } = {
       apple: "https://example.com/apple-video.mp4",
       banana: "https://example.com/banana-video.mp4",
@@ -62,24 +61,28 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <div className="w-full">
-      <div className="relative">
+      <div className="relative mb-4">
         <input
           type="text"
           value={query}
           onChange={handleChange}
           onKeyUp={handleKeyPress}
-          className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          className="w-full py-3 pl-12 pr-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:border-blue-500 transition duration-300 ease-in-out"
           placeholder="Search for a word..."
         />
-        <FiSearch className="absolute left-3 top-2.5 text-gray-500" />
+        <img
+          src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/search-128.png"
+          alt="Search"
+          className="w-6 h-6 absolute left-4 top-4"
+        />
       </div>
 
       {results.length > 0 && (
-        <div className="mt-2 bg-white border border-gray-300 rounded-lg shadow-md">
+        <div className="mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
           {results.map((result, index) => (
             <div
               key={index}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer transition duration-200"
               onClick={() => handleSelect(result)}
             >
               {result}
@@ -90,7 +93,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
       {videoUrl && (
         <div className="mt-4">
-          <video controls className="w-full">
+          <video controls className="w-full rounded-lg shadow-md">
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
