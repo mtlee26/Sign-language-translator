@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FiSearch } from "react-icons/fi";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -46,8 +45,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const fetchVideo = (word: string) => {
     const videoDatabase: { [key: string]: string } = {
-      apple: "https://example.com/apple-video.mp4",
-      banana: "https://example.com/banana-video.mp4",
+      apple: "https://www.youtube.com/embed/someAppleVideoID",
+      banana: "https://www.youtube.com/embed/someBananaVideoID",
     };
 
     if (videoDatabase[word]) {
@@ -93,10 +92,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
       {videoUrl && (
         <div className="mt-4">
-          <video controls className="w-full rounded-lg shadow-md">
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <iframe
+            width="100%"
+            height="315"
+            src={videoUrl}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="rounded-lg shadow-md"
+          ></iframe>
           <p className="text-center mt-4 text-3xl font-semibold">
             {selectedWord}
           </p>
