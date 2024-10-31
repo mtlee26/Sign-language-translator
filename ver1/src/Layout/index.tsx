@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 
 interface Props {
   children: React.ReactNode;
@@ -8,7 +8,23 @@ interface Props {
 
 const Layout: React.FC<Props> = ({ children, className }) => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [currentButton, setCurrentButton] = useState<string>("Dashboard");
   const history = useHistory();
+  const location = useLocation();
+
+  // Đồng bộ `currentButton` với URL hiện tại
+  useEffect(() => {
+    const pathToButtonName: { [key: string]: string } = {
+      "/dashboard": "Dashboard",
+      "/translate": "Translate",
+      "/aboutus": "About us",
+      // Thêm các đường dẫn khác vào đây nếu cần
+    };
+    const buttonName = pathToButtonName[location.pathname];
+    if (buttonName) {
+      setCurrentButton(buttonName);
+    }
+  }, [location.pathname]);
 
   const handleMouseEnter = (buttonName: string) => {
     setHoveredButton(buttonName);
@@ -18,19 +34,17 @@ const Layout: React.FC<Props> = ({ children, className }) => {
     setHoveredButton(null);
   };
 
-  const handleTranslateClick = () => {
-    history.push("/translate");
-  };
-
-  const handleDashboardClick = () => {
-    history.push("/dashboard");
+  const handleButtonClick = (buttonName: string, path: string) => {
+    if (currentButton !== buttonName) {
+      setCurrentButton(buttonName); // Cập nhật button hiện tại
+    }
+    history.push(path);
   };
 
   const buttonClass = (buttonName: string) => {
-    if (hoveredButton === buttonName) {
-      return "bg-[rgb(84,169,206)] text-white";
-    }
-    return "bg-[rgb(30,30,47)] text-white";
+    return currentButton === buttonName || hoveredButton === buttonName
+      ? "bg-[rgb(84,169,206)] text-white" // Màu xanh khi button được chọn hoặc hover
+      : "bg-[rgb(30,30,47)] text-white"; // Màu mặc định
   };
 
   return (
@@ -39,14 +53,14 @@ const Layout: React.FC<Props> = ({ children, className }) => {
         className || ""
       }`}
     >
-      <div className="xl:w-full xl:min-w-[unset] flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px]">
+      <div className="xl:w-full xl:min-w-[unset] xl:h-full flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px]">
         <nav className="tn:mt-[18px] tn:mx-2 tn:mb-[39px] flex flex-col items-center mt-[18px] mr-[13px] mb-[39px] ml-3.5">
           {/* Navigation buttons */}
           {[
             {
               name: "Dashboard",
               src: "/assets/a4efd272e8aba77ed080901fc7c6cd27.png",
-              onClick: handleDashboardClick,
+              path: "/dashboard",
             },
             {
               name: "How to use",
@@ -59,7 +73,7 @@ const Layout: React.FC<Props> = ({ children, className }) => {
             {
               name: "Translate",
               src: "/assets/1ca5f57b8ec7cf4e2717b702c362affd.svg",
-              onClick: handleTranslateClick,
+              path: "/translate",
             },
             {
               name: "Game",
@@ -72,10 +86,12 @@ const Layout: React.FC<Props> = ({ children, className }) => {
             {
               name: "About us",
               src: "/assets/81c5a91208b05fe119272d0856aecf1b.svg",
+              path: "/about-us",
             },
             {
               name: "Log out",
               src: "/assets/941e141cce9170be6727269019285b6c.svg",
+              path: "/Landing",
             },
           ].map((button, index) => (
             <a
@@ -85,7 +101,9 @@ const Layout: React.FC<Props> = ({ children, className }) => {
               className={`${buttonClass(
                 button.name
               )} flex flex-col rounded-md w-[191.9875030517578px] z-[3] max-w-[85%] mt-[15px]`}
-              onClick={button.onClick}
+              onClick={() =>
+                button.path && handleButtonClick(button.name, button.path)
+              } // Chỉ gọi handleButtonClick khi có đường dẫn
             >
               <div className="xs:gap-x-4 tn:my-[9px] tn:mx-2 tn:gap-x-2 flex gap-x-[22px] my-[9px] mx-4">
                 <div
@@ -101,7 +119,7 @@ const Layout: React.FC<Props> = ({ children, className }) => {
         </nav>
       </div>
 
-      <article className="xl:w-full xl:min-w-[unset] xl:m-0 xs:gap-y-20 tn:gap-y-[50px] w-[1156px] flex flex-col items-center gap-y-[117px] min-w-0 max-w-[1156px] mb-[61px]">
+      <article className="flex flex-col items-center gap-y-[117px] min-w-0 mb-[61px] mt-[40px] ml-8">
         {/* Main content area */}
         {children}
       </article>

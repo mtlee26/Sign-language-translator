@@ -6,17 +6,18 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import Landing from "./components/Landing";
-import Login from "components/Login";
-import Signup from "components/Signup";
-import Dashboard from "components/Dashboard";
+import Landing from "./pages/Landing";
+import Login from "pages/Login";
+import Signup from "pages/Signup";
+import Dashboard from "pages/Dashboard";
 import AOS from "aos";
 import { isMobile } from "react-device-detect";
 
 import "aos/dist/aos.css";
 import "./fonts.css";
 import "./tailwind.css";
-import Translator1 from "components/Translator";
+import Translator from "pages/Translator";
+import Aboutus from "pages/About us";
 
 function App() {
   useEffect(() => {
@@ -39,7 +40,9 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/translate" component={Translator1} />
+        <Route exact path="/translate" component={Translator} />
+        <Route exact path="/about-us" component={Aboutus} />
+        <Route path="/" exact />
       </Switch>
     </Router>
   );

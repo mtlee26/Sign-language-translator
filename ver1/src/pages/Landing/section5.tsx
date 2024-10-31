@@ -1,14 +1,14 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
+import React from "react";
+import { useHistory } from "react-router-dom";
 interface IProps {
   className?: string;
 }
 
 function RenderSection5(props: IProps) {
-  const history = useHistory(); 
+  const history = useHistory();
 
   const handleLoginClick = () => {
-    history.push('/login'); 
+    history.push("/login");
   };
   return (
     <section className="flex flex-col z-[1] relative">
@@ -32,7 +32,7 @@ function RenderSection5(props: IProps) {
                 <div className="flex gap-x-6">
                   <img
                     className="rounded-lg w-20 min-w-0"
-                    src={'/assets/4de069e7c3f768477a333b51c5a5d674.png'}
+                    src={"/assets/4de069e7c3f768477a333b51c5a5d674.png"}
                     alt="alt text"
                   />
 
@@ -49,7 +49,7 @@ function RenderSection5(props: IProps) {
 
                       <img
                         className="w-[47px] min-w-0"
-                        src={'/assets/aebe4f16c3c7da747320fb609c038204.svg'}
+                        src={"/assets/aebe4f16c3c7da747320fb609c038204.svg"}
                         alt="alt text"
                       />
                     </div>
@@ -58,10 +58,15 @@ function RenderSection5(props: IProps) {
 
                 <div className="flex flex-col gap-y-[35px]">
                   <p className="font-medium text-[16px] leading-[1.7] font-PlusJakartaSans text-[rgb(75,75,89)]">
-                    This app has changed how I communicate with my deaf friends! The sign language recognition is fast,
-                    allowing me to chat without language barriers.
+                    This app has changed how I communicate with my deaf friends!
+                    The sign language recognition is fast, allowing me to chat
+                    without language barriers.
                   </p>
-                  <img className="w-[116px]" src={'/assets/8d7d866e1102424a33bd0c45d8db5670.svg'} alt="alt text" />
+                  <img
+                    className="w-[116px]"
+                    src={"/assets/8d7d866e1102424a33bd0c45d8db5670.svg"}
+                    alt="alt text"
+                  />
                 </div>
               </div>
             </div>
@@ -71,7 +76,7 @@ function RenderSection5(props: IProps) {
                 <div className="flex gap-x-6">
                   <img
                     className="rounded-lg w-20 min-w-0"
-                    src={'/assets/d9e2980b284fdf7624398ad8e011556f.png'}
+                    src={"/assets/d9e2980b284fdf7624398ad8e011556f.png"}
                     alt="alt text"
                   />
 
@@ -88,7 +93,7 @@ function RenderSection5(props: IProps) {
 
                       <img
                         className="w-[47px] min-w-0"
-                        src={'/assets/aebe4f16c3c7da747320fb609c038204.svg'}
+                        src={"/assets/aebe4f16c3c7da747320fb609c038204.svg"}
                         alt="alt text"
                       />
                     </div>
@@ -97,10 +102,15 @@ function RenderSection5(props: IProps) {
 
                 <div className="flex flex-col gap-y-[35px]">
                   <p className="font-medium text-[16px] leading-[1.7] font-PlusJakartaSans text-[rgb(75,75,89)]">
-                    The text-to-sign feature is incredibly convenient. Now I can easily convey my thoughts to those who
-                    are speech or hearing-impaired without having to learn sign language.
+                    The text-to-sign feature is incredibly convenient. Now I can
+                    easily convey my thoughts to those who are speech or
+                    hearing-impaired without having to learn sign language.
                   </p>
-                  <img className="w-[116px]" src={'/assets/a0b3b6fa109b94ba746019c4b64e5fed.svg'} alt="alt text" />
+                  <img
+                    className="w-[116px]"
+                    src={"/assets/a0b3b6fa109b94ba746019c4b64e5fed.svg"}
+                    alt="alt text"
+                  />
                 </div>
               </div>
             </div>
@@ -109,7 +119,10 @@ function RenderSection5(props: IProps) {
 
         <div
           className="flex flex-col bg-[image:var(--src)] bg-[center_center] bg-[length:100%_100%] bg-no-repeat rounded-xl overflow-hidden"
-          style={{ '--src': `url(${'/assets/d81f17cf63cf1fa0bee775dc3f86df0b.png'})` }}>
+          style={{
+            "--src": `url(${"/assets/d81f17cf63cf1fa0bee775dc3f86df0b.png"})`,
+          }}
+        >
           <div className="w-[88%] flex justify-between items-center gap-x-2.5 my-[72px] mx-auto">
             <h2 className="font-bold text-[39px] leading-tight font-PlusJakartaSans text-white capitalize w-[500px] min-w-0">
               Ready to transform your communications ?
@@ -117,11 +130,17 @@ function RenderSection5(props: IProps) {
 
             <button className="bg-[rgb(30,30,47)] rounded-lg pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 min-w-[230px]">
               {/* TODO */}
-              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px" 
-               onClick={handleLoginClick}  >
+              <p
+                className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
+                onClick={handleLoginClick}
+              >
                 Get started now
               </p>
-              <img className="w-6 min-w-0" src={'/assets/9a492b13b04238b64597d6cd1d66e897.png'} alt="alt text" />
+              <img
+                className="w-6 min-w-0"
+                src={"/assets/9a492b13b04238b64597d6cd1d66e897.png"}
+                alt="alt text"
+              />
             </button>
           </div>
         </div>

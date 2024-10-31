@@ -73,7 +73,7 @@ function Dashboard(props: IProps) {
               </h2>
               <img
                 className="w-[262px] object-cover min-w-0"
-                src={"/assets/c68f09e552e70d7a25490973e03e2c86.png"}
+                src="https://cdn1.iconfinder.com/data/icons/male-characters-2-1/1000/character_builder___library_man_carry_book_notebook-256.png"
                 alt="alt text"
               />
             </div>
@@ -85,7 +85,7 @@ function Dashboard(props: IProps) {
             </h2>
             <img
               className="w-[262px] translate-x-[0] translate-y-[-50%] absolute right-[-65px] top-1/2"
-              src={"/assets/30dee8901f734eca8a85129fefa36afd.png"}
+              src="https://cdn0.iconfinder.com/data/icons/akura-travel-illustration/512/Translate-256.png"
               alt="alt text"
             />
           </div>
@@ -114,7 +114,7 @@ function Dashboard(props: IProps) {
               </h2>
               <img
                 className="w-[262px] object-cover min-w-0"
-                src={"/assets/3143f7eb0cbe897272726764debfac97.png"}
+                src="https://cdn0.iconfinder.com/data/icons/business-profile-1/1000/2205Profile-BusinessProfile-256.png"
                 alt="alt text"
               />
             </div>
