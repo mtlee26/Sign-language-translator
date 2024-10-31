@@ -22,6 +22,14 @@ function Dashboard(props: IProps) {
     history.push("/translate");
   };
 
+  const handleDictionaryClick = () => {
+    history.push("/dictionary");
+  };
+
+  const handleAboutusClick = () => {
+    history.push("/about-us");
+  };
+
   const buttonClass = (buttonName: string) => {
     if (currentButton === buttonName || hoveredButton === buttonName) {
       return "bg-[rgb(84,169,206)] text-white";
@@ -68,9 +76,12 @@ function Dashboard(props: IProps) {
             <div className="bg-[rgb(30,30,47)] rounded-[10px] relative min-h-[177px]" />
 
             <div className="tn:gap-x-2 w-[488px] flex justify-between gap-x-2.5 absolute left-[22px] top-[-61px]">
-              <h2 className="md:text-[32px] md:items-start xs:mt-[78px] xs:mx-0 xs:mb-20 xxs:text-[30px] tn:my-[50px] tn:mx-0 font-normal text-[36px] leading-[1.33] font-PlusJakartaSans text-white mt-[78px] mb-[135px] cursor-pointer">
+              <button
+                className="md:text-[32px] md:items-start xs:mt-[78px] xs:mx-0 xs:mb-20 xxs:text-[30px] tn:my-[50px] tn:mx-0 font-normal text-[36px] leading-[1.33] font-PlusJakartaSans text-white mt-[78px] mb-[135px] cursor-pointer"
+                onClick={handleDictionaryClick}
+              >
                 Dictionary
-              </h2>
+              </button>
               <img
                 className="w-[262px] object-cover min-w-0"
                 src="https://cdn1.iconfinder.com/data/icons/male-characters-2-1/1000/character_builder___library_man_carry_book_notebook-256.png"
@@ -80,9 +91,12 @@ function Dashboard(props: IProps) {
           </article>
 
           <div className="flex flex-col bg-[rgba(244,222,10,0.729)] rounded-[10px] relative row-span-1 column-span-1">
-            <h2 className="md:text-[32px] md:items-start sm:w-[85%] xs:mt-[17px] xs:mr-0 xs:mb-20 xs:ml-4 xxs:text-[30px] tn:mt-[17px] tn:mr-0 tn:mb-[50px] tn:ml-2 font-normal text-[36px] leading-[1.33] font-PlusJakartaSans text-black w-[166px] relative max-w-[85%] mt-[17px] mb-28 ml-[22px] cursor-pointer">
+            <button
+              className="md:text-[32px] md:items-start sm:w-[85%] xs:mt-[17px] xs:mr-0 xs:mb-20 xs:ml-4 xxs:text-[30px] tn:mt-[17px] tn:mr-0 tn:mb-[50px] tn:ml-2 font-normal text-[36px] leading-[1.33] font-PlusJakartaSans text-black w-[166px] relative max-w-[85%] mt-[17px] mb-28 ml-[22px] cursor-pointer"
+              onClick={handleTranslateClick}
+            >
               Translator
-            </h2>
+            </button>
             <img
               className="w-[262px] translate-x-[0] translate-y-[-50%] absolute right-[-65px] top-1/2"
               src="https://cdn0.iconfinder.com/data/icons/akura-travel-illustration/512/Translate-256.png"
@@ -109,9 +123,12 @@ function Dashboard(props: IProps) {
             <div className="bg-[rgba(75,75,89,0.607)] rounded-[10px] relative min-h-[176px]" />
 
             <div className="tn:gap-x-2 w-[462px] flex justify-between gap-x-2.5 absolute left-[22px] top-[-48px]">
-              <h2 className="md:text-[32px] md:items-start xs:mt-[65px] xs:mx-0 xs:mb-20 xxs:text-[30px] tn:my-[50px] tn:mx-0 font-normal text-[36px] leading-[1.33] font-PlusJakartaSans text-white mt-[65px] mb-[148px] cursor-pointer">
+              <button
+                className="md:text-[32px] md:items-start xs:mt-[65px] xs:mx-0 xs:mb-20 xxs:text-[30px] tn:my-[50px] tn:mx-0 font-normal text-[36px] leading-[1.33] font-PlusJakartaSans text-white mt-[65px] mb-[148px] cursor-pointer"
+                onClick={handleAboutusClick}
+              >
                 About us
-              </h2>
+              </button>
               <img
                 className="w-[262px] object-cover min-w-0"
                 src="https://cdn0.iconfinder.com/data/icons/business-profile-1/1000/2205Profile-BusinessProfile-256.png"
