@@ -1,15 +1,24 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
-import Landing from './components/Landing';
-import Login from 'components/Login';
-import Signup from 'components/Signup';
-import Dashboard from 'components/Dashboard';
-import AOS from 'aos';
-import { isMobile } from 'react-device-detect';
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import Landing from "./pages/Landing";
+import Login from "pages/Login";
+import Signup from "pages/Signup";
+import Dashboard from "pages/Dashboard";
+import AOS from "aos";
+import { isMobile } from "react-device-detect";
 
-import 'aos/dist/aos.css';
-import './fonts.css';
-import './tailwind.css';
+import "aos/dist/aos.css";
+import "./fonts.css";
+import "./tailwind.css";
+import Translator from "pages/Translator";
+import Aboutus from "pages/About us";
+import Dictionary from "pages/Dictionary";
 
 function App() {
   useEffect(() => {
@@ -32,8 +41,11 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/translate" component={Translator} />
+        <Route exact path="/about-us" component={Aboutus} />
+        <Route exact path="/dictionary" component={Dictionary} />
+        <Route path="/" exact />
       </Switch>
-
     </Router>
   );
 }
