@@ -1,4 +1,4 @@
-import Layout from "Layout"; 
+import Layout from "Layout";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import useSpeechRecognition from "hooks/useSpeechRecognitionHook";
@@ -8,23 +8,27 @@ interface IProps {
 }
 
 function Translator(props: IProps) {
-  const { text: recognizedText, isListening, startListening } = useSpeechRecognition();
-  const [text, setText] = useState(""); 
+  const { text: recognizedText, isListening, startListening, stopListening, setIsAdding, resetText } = useSpeechRecognition();
+  const [text, setText] = useState("");
   const [mode, setMode] = useState("textToASL");
   const [buttonClicked, setButtonClicked] = useState("upload");
+  const [isAddingMode, setIsAddingMode] = useState(false); 
+  const [soundButtonClicked, setSoundButtonClicked] = useState(false); 
   const history = useHistory();
+
 
   useEffect(() => {
     if (recognizedText) {
       setText(recognizedText);
     }
   }, [recognizedText]);
- 
+
   useEffect(() => {
     const unlisten = history.listen((location) => {
       if (location.pathname === "/translate") {
         setMode("textToASL");
         setButtonClicked("upload");
+        setSoundButtonClicked(false);
       }
     });
     return () => {
@@ -34,9 +38,40 @@ function Translator(props: IProps) {
 
   const handleVoiceInputClick = () => {
     if (isListening) {
-      setText(""); 
+      stopListening();
+      setIsAddingMode(true);
+      resetText();
     } else {
       startListening();
+      setIsAdding(true);
+      setIsAddingMode(false);
+    }
+  };
+
+  const handleSoundClick = () => {
+    setSoundButtonClicked((prev) => {
+      const newState = !prev; 
+      if (newState) {
+        speakText(); 
+      } else {
+        setIsAddingMode(false);
+        stopListening(); 
+      }
+      return newState; 
+    });
+  };
+  
+  const speakText = () => {
+    if (text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (isListening) {
+        stopListening();
+      }
+      utterance.onend = () => {
+        setSoundButtonClicked(false); 
+      };
+  
+      speechSynthesis.speak(utterance);
     }
   };
 
@@ -93,32 +128,38 @@ function Translator(props: IProps) {
                   <textarea
                     className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
                     placeholder="Enter text here..."
-                    value={text} 
-                    onChange={(e) => setText(e.target.value)} 
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
                   ></textarea>
                   <div className="flex justify-between mt-6">
                     <div className="flex space-x-4">
                       <button
-                        className="p-3 border border-gray-300 rounded-full"
-                        onClick={handleVoiceInputClick} 
+                        className={`p-3 border rounded-full ${
+                          isListening ? "bg-blue-500 text-white" : "border-gray-300"
+                        }`}
+                        onClick={handleVoiceInputClick}
                       >
                         <img
                           src="https://cdn3.iconfinder.com/data/icons/random-icon-set/512/microphone-128.png"
-                          alt="Voice input"
+                          alt="Listening"
                           className="w-6 h-6"
                         />
                       </button>
-                      <button className="p-3 border border-gray-300 rounded-full">
+                      <button
+                        className={`p-3 border border-gray-300 rounded-full ${
+                          soundButtonClicked ? "bg-blue-500 text-white" : ""
+                        }`}
+                        onClick={handleSoundClick}
+                      >
                         <img
                           src="https://cdn3.iconfinder.com/data/icons/system-basic-vol-5/20/icon-speaker-loudness-sound-2-128.png"
-                          alt="Listen"
+                          alt="Speaking"
                           className="w-6 h-6"
                         />
                       </button>
                     </div>
                   </div>
                 </div>
-
                 <div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
                   <div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300">
                     {/* Translation output will go here */}
