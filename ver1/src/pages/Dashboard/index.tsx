@@ -21,6 +21,15 @@ function Dashboard(props: IProps) {
     history.push("/about-us");
   };
 
+  const handleHowToUseClick = () => {
+    history.push("/how-to-use");
+  };
+
+  const handleGameClick = () => {
+    history.push("/game");
+
+  };
+
   return (
     <Layout>
       <article className="xl:w-full xl:min-w-[unset] xl:m-0 xs:gap-y-20 tn:gap-y-[50px] w-[1156px] flex flex-col items-center gap-y-[50px] min-w-0 max-w-[1156px] mb-[61px]">
@@ -37,9 +46,9 @@ function Dashboard(props: IProps) {
               Sign language communication tool
             </h2>
 
-            <button className="bg-[rgb(84,169,206)] rounded-lg w-[184px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full">
+            <button className="bg-[rgb(84,169,206)] rounded-lg w-[184px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full cursor-pointer"  onClick={handleHowToUseClick}>
               {/* TODO */}
-              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
+              <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"> 
                 How to use
               </p>
               <img
@@ -52,8 +61,8 @@ function Dashboard(props: IProps) {
         </section>
 
         <section className="md:gap-x-4 sm:grid-cols-[repeat(1,_minmax(0,_1fr))] grid grid-cols-[repeat(2,_minmax(0,_1fr))] content-start gap-y-[40px] gap-x-[80px] w-[85%]">
-          {/* Dictionary */}
-          <article className="flex flex-col relative row-span-1 column-span-1">
+          {/* Dictionary */} 
+          <article className="flex flex-col relative row-span-1 column-span-1 cursor-pointer "  onClick={handleDictionaryClick}>
             <div className="bg-[rgb(30,30,47)] rounded-[10px] relative min-h-[150px]">
               <img
                 className="w-[180px] translate-x-0 translate-y-[-50%] absolute right-[-30px] top-1/2"
@@ -62,18 +71,16 @@ function Dashboard(props: IProps) {
               />
             </div>
             <button
-              className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-white cursor-pointer absolute left-[15px] top-[10px]"
-              onClick={handleDictionaryClick}
+              className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-white absolute left-[15px] top-[10px]"
             >
               Dictionary
             </button>
           </article>
 
           {/* Translator */}
-          <div className="flex flex-col bg-[rgba(244,222,10,0.729)] rounded-[10px] relative row-span-1 column-span-1">
+          <div className="flex flex-col bg-[rgba(244,222,10,0.729)] rounded-[10px] relative row-span-1 column-span-1 cursor-pointer"  onClick={handleTranslateClick}>
             <button
-              className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-black absolute left-[15px] top-[10px] cursor-pointer"
-              onClick={handleTranslateClick}
+              className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-black absolute left-[15px] top-[10px]"
             >
               Translator
             </button>
@@ -85,9 +92,9 @@ function Dashboard(props: IProps) {
           </div>
 
           {/* Games */}
-          <div className="flex flex-col relative row-span-1 column-span-1">
+          <div className="flex flex-col relative row-span-1 column-span-1 cursor-pointer" onClick={handleGameClick}>
             <div className="bg-[rgb(84,169,206)] rounded-[10px] relative min-h-[150px]" />
-              <h2 className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-white cursor-pointer absolute left-[15px] top-[10px]">
+              <h2 className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-white absolute left-[15px] top-[10px]">
                 Games
               </h2>
               <img
@@ -98,11 +105,10 @@ function Dashboard(props: IProps) {
             </div>
 
           {/* About us */}
-          <div className="flex flex-col relative row-span-1 column-span-1">
+          <div className="flex flex-col relative row-span-1 column-span-1 cursor-pointer" onClick={handleAboutusClick}>
             <div className="bg-[rgba(75,75,89,0.607)] rounded-[10px] relative min-h-[150px]" />
               <button
-                className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-white cursor-pointer absolute left-[15px] top-[10px]"
-                onClick={handleAboutusClick}
+                className="md:text-[28px] font-normal text-[30px] font-PlusJakartaSans text-white absolute left-[15px] top-[10px]"
               >
                 About us
               </button>

@@ -36,6 +36,13 @@ function Translator(props: IProps) {
     };
   }, [history]);
 
+  useEffect(() => {
+    setText("");
+    setButtonClicked("upload");
+    setSoundButtonClicked(false);
+    resetText();
+  }, [mode]);
+
   const handleVoiceInputClick = () => {
     if (isListening) {
       stopListening();

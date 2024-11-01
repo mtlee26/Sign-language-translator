@@ -18,8 +18,11 @@ const Layout: React.FC<Props> = ({ children, className }) => {
     const pathToButtonName: { [key: string]: string } = {
       "/dashboard": "Dashboard",
       "/translate": "Translate",
-      "/aboutus": "About us",
+      "/about-us": "About us",
       "/dictionary": "Dictionary",
+      "/game": "Game",
+      "/setting": "Setting",
+      "/how-to-use": 'How to use'
       // Thêm các đường dẫn khác vào đây nếu cần
     };
     const buttonName = pathToButtonName[location.pathname];

@@ -19,6 +19,9 @@ const Menu: React.FC<Props> = ({ className }) => {
       "/translate": "Translate",
       "/about-us": "About us",
       "/dictionary": "Dictionary",
+      "/game": "Game",
+      "/setting": "Setting",
+      "/how-to-use": 'How to use'
       // Thêm các đường dẫn khác vào đây nếu cần
     };
     const buttonName = pathToButtonName[location.pathname];
@@ -62,7 +65,7 @@ const Menu: React.FC<Props> = ({ className }) => {
       </div>
       
       {/* Navigation Buttons */}
-      <nav className="tn:mt-[18px] tn:mx-2 tn:mb-[39px] flex flex-col items-center mt-[48px] mr-[13px] mb-[39px] ml-3.5">
+      <nav className="tn:mt-[18px] tn:mx-2 tn:mb-[39px] flex flex-col items-center mt-[48px] mr-[13px] mb-[39px] ml-3.5 cursor-pointer ">
         {[
           {
             name: "Dashboard",
@@ -72,6 +75,7 @@ const Menu: React.FC<Props> = ({ className }) => {
           {
             name: "How to use",
             src: "/assets/8c3f7217513125d385724f13944a4ad1.png",
+            path: "/how-to-use",
           },
           {
             name: "Dictionary",
@@ -86,10 +90,12 @@ const Menu: React.FC<Props> = ({ className }) => {
           {
             name: "Game",
             src: "/assets/b45a64961d14a6c73208b5ed43797774.svg",
+            path: "/game",
           },
           {
             name: "Setting",
             src: "/assets/941e141cce9170be6727269019285b6c.svg",
+            path:"/setting",
           },
           {
             name: "About us",

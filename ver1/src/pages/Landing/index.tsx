@@ -48,11 +48,10 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg w-[230px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full">
+                <button className="bg-[rgb(30,30,47)] rounded-lg w-[230px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full " onClick={handleLoginClick}>
                   {/* TODO */}
                   <p
                     className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                    onClick={handleLoginClick}
                   >
                     Get Started Now
                   </p>
@@ -339,11 +338,10 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full">
+                <button className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full" onClick={handleLoginClick}>
                   {/* TODO */}
                   <p
                     className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                    onClick={handleLoginClick}
                   >
                     Let’s go
                   </p>
@@ -454,11 +452,10 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full">
+                <button className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full"  onClick={handleLoginClick}>
                   {/* TODO */}
                   <p
                     className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                    onClick={handleLoginClick}
                   >
                     Let’s go
                   </p>
@@ -674,11 +671,10 @@ function Landing(props: IProps) {
                   Ready to transform your communications ?
                 </h2>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 min-w-[230px]">
+                <button className="bg-[rgb(30,30,47)] rounded-lg pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 min-w-[230px]"  onClick={handleLoginClick}>
                   {/* TODO */}
                   <p
                     className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                    onClick={handleLoginClick}
                   >
                     Get started now
                   </p>
