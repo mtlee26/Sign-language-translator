@@ -1,0 +1,7 @@
+tensorflow
+tensorflow-gpu
+opencv-contrib-python
+mediapipe
+scikit-learn
+matplotlib
+pandas
