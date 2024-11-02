@@ -1,0 +1,336 @@
+[
+	{
+        "gloss": "book",
+        "instances": [
+            {
+                "bbox": [
+                    385,
+                    37,
+                    885,
+                    720
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 0,
+                "signer_id": 118,
+                "source": "aslbrick",
+                "split": "train",
+                "url": "http://aslbricks.org/New/ASL-Videos/book.mp4",
+                "variation_id": 0,
+                "video_id": "69241"
+            },
+            {
+                "bbox": [
+                    262,
+                    1,
+                    652,
+                    480
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 2,
+                "signer_id": 110,
+                "source": "valencia-asl",
+                "split": "train",
+                "url": "https://www.youtube.com/watch?v=0UsjUE-TXns",
+                "variation_id": 0,
+                "video_id": "68011"
+            },
+            {
+                "bbox": [
+                    123,
+                    19,
+                    516,
+                    358
+                ],
+                "fps": 25,
+                "frame_end": 60,
+                "frame_start": 1,
+                "instance_id": 3,
+                "signer_id": 113,
+                "source": "lillybauer",
+                "split": "train",
+                "url": "https://www.youtube.com/watch?v=1QOYOZ3g-aY",
+                "variation_id": 0,
+                "video_id": "68208"
+            },
+            {
+                "bbox": [
+                    95,
+                    0,
+                    1180,
+                    720
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 4,
+                "signer_id": 109,
+                "source": "valencia-asl",
+                "split": "train",
+                "url": "https://www.youtube.com/watch?v=aGtIHKEdCds",
+                "variation_id": 0,
+                "video_id": "68012"
+            },
+            {
+                "bbox": [
+                    110,
+                    25,
+                    274,
+                    240
+                ],
+                "fps": 25,
+                "frame_end": 2249,
+                "frame_start": 2150,
+                "instance_id": 5,
+                "signer_id": 121,
+                "source": "northtexas",
+                "split": "val",
+                "url": "https://www.youtube.com/watch?v=hjS0dQDgbjo",
+                "variation_id": 0,
+                "video_id": "70212"
+            },
+            {
+                "bbox": [
+                    153,
+                    38,
+                    395,
+                    360
+                ],
+                "fps": 25,
+                "frame_end": 3852,
+                "frame_start": 3732,
+                "instance_id": 6,
+                "signer_id": 121,
+                "source": "northtexas",
+                "split": "train",
+                "url": "https://www.youtube.com/watch?v=WGfiiDgrq1I",
+                "variation_id": 0,
+                "video_id": "70266"
+            },
+            {
+                "bbox": [
+                    16,
+                    2,
+                    235,
+                    240
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 7,
+                "signer_id": 49,
+                "source": "aslpro",
+                "split": "train",
+                "url": "http://www.aslpro.com/main/b/book_english_grammar.swf",
+                "variation_id": 0,
+                "video_id": "07085"
+            },
+            {
+                "bbox": [
+                    16,
+                    4,
+                    239,
+                    240
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 8,
+                "signer_id": 49,
+                "source": "aslpro",
+                "split": "train",
+                "url": "http://www.aslpro.com/main/b/book_geography.swf",
+                "variation_id": 0,
+                "video_id": "07086"
+            },
+            {
+                "bbox": [
+                    8,
+                    1,
+                    253,
+                    240
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 9,
+                "signer_id": 18,
+                "source": "aslpro",
+                "split": "train",
+                "url": "http://www.aslpro.com/main/b/book_geometry.swf",
+                "variation_id": 0,
+                "video_id": "07087"
+            },
+            {
+                "bbox": [
+                    462,
+                    44,
+                    949,
+                    720
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 10,
+                "signer_id": 31,
+                "source": "signschool",
+                "split": "train",
+                "url": "https://signstock.blob.core.windows.net/signschool/videos/SignSchool%20Book.mp4",
+                "variation_id": 0,
+                "video_id": "07069"
+            }
+        ]
+    },
+    {
+        "gloss": "drink",
+        "instances": [
+            {
+                "bbox": [
+                    551,
+                    68,
+                    1350,
+                    1080
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 0,
+                "signer_id": 115,
+                "source": "aslbrick",
+                "split": "val",
+                "url": "http://aslbricks.org/New/ASL-Videos/drink.mp4",
+                "variation_id": 0,
+                "video_id": "69302"
+            },
+            {
+                "bbox": [
+                    153,
+                    11,
+                    488,
+                    370
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 1,
+                "signer_id": 94,
+                "source": "aslsignbank",
+                "split": "train",
+                "url": "https://aslsignbank.haskins.yale.edu/dictionary/protected_media/glossvideo/ASL/DR/DRINK-119.mp4",
+                "variation_id": 0,
+                "video_id": "65539"
+            },
+            {
+                "bbox": [
+                    142,
+                    20,
+                    501,
+                    480
+                ],
+                "fps": 25,
+                "frame_end": 5831,
+                "frame_start": 5710,
+                "instance_id": 2,
+                "signer_id": 121,
+                "source": "northtexas",
+                "split": "val",
+                "url": "https://www.youtube.com/watch?v=F5Wef1_PtLk",
+                "variation_id": 0,
+                "video_id": "70173"
+            },
+            {
+                "bbox": [
+                    350,
+                    0,
+                    999,
+                    720
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 12,
+                "signer_id": 5,
+                "source": "aslu",
+                "split": "train",
+                "url": "https://www.youtube.com/watch?v=i0opsQ2zB1Q",
+                "variation_id": 0,
+                "video_id": "17729"
+            },
+            {
+                "bbox": [
+                    334,
+                    0,
+                    997,
+                    720
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 13,
+                "signer_id": 5,
+                "source": "aslu",
+                "split": "test",
+                "url": "https://www.youtube.com/watch?v=k6cNmM9WgUs",
+                "variation_id": 0,
+                "video_id": "17730"
+            },
+            {
+                "bbox": [
+                    348,
+                    43,
+                    933,
+                    720
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 14,
+                "signer_id": 5,
+                "source": "aslu",
+                "split": "train",
+                "url": "https://www.youtube.com/watch?v=LqJM7wcUixQ",
+                "variation_id": 0,
+                "video_id": "17731"
+            },
+            {
+                "bbox": [
+                    0,
+                    4,
+                    206,
+                    240
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 15,
+                "signer_id": 44,
+                "source": "aslpro",
+                "split": "train",
+                "url": "http://www.aslpro.com/main/d/drink.swf",
+                "variation_id": 0,
+                "video_id": "17732"
+            },
+            {
+                "bbox": [
+                    186,
+                    63,
+                    551,
+                    400
+                ],
+                "fps": 25,
+                "frame_end": -1,
+                "frame_start": 1,
+                "instance_id": 16,
+                "signer_id": 12,
+                "source": "aslsearch",
+                "split": "train",
+                "url": "http://www.aslsearch.com/signs/videos/drink-alcohol.mp4",
+                "variation_id": 0,
+                "video_id": "17733"
+            }
+        ]
+    }
+]
