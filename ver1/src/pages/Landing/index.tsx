@@ -48,11 +48,12 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg w-[230px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full " onClick={handleLoginClick}>
+                <button
+                  className="bg-[rgb(30,30,47)] rounded-lg w-[230px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full "
+                  onClick={handleLoginClick}
+                >
                   {/* TODO */}
-                  <p
-                    className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                  >
+                  <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
                     Get Started Now
                   </p>
                   <img
@@ -338,11 +339,12 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full" onClick={handleLoginClick}>
+                <button
+                  className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full"
+                  onClick={handleLoginClick}
+                >
                   {/* TODO */}
-                  <p
-                    className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                  >
+                  <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
                     Let’s go
                   </p>
                   <img
@@ -452,11 +454,12 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full"  onClick={handleLoginClick}>
+                <button
+                  className="bg-[rgb(30,30,47)] rounded-lg w-[157px] pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 max-w-full"
+                  onClick={handleLoginClick}
+                >
                   {/* TODO */}
-                  <p
-                    className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                  >
+                  <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
                     Let’s go
                   </p>
                   <img
@@ -662,20 +665,23 @@ function Landing(props: IProps) {
 
             <div
               className="flex flex-col bg-[image:var(--src)] bg-[center_center] bg-[length:100%_100%] bg-no-repeat rounded-xl overflow-hidden"
-              style={{
-                "--src": `url(${"/assets/d81f17cf63cf1fa0bee775dc3f86df0b.png"})`,
-              }}
+              style={
+                {
+                  "--src": `url(${"/assets/d81f17cf63cf1fa0bee775dc3f86df0b.png"})`,
+                } as any
+              }
             >
               <div className="w-[88%] flex justify-between items-center gap-x-2.5 my-[72px] mx-auto">
                 <h2 className="font-bold text-[39px] leading-tight font-PlusJakartaSans text-white capitalize w-[500px] min-w-0">
                   Ready to transform your communications ?
                 </h2>
 
-                <button className="bg-[rgb(30,30,47)] rounded-lg pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 min-w-[230px]"  onClick={handleLoginClick}>
+                <button
+                  className="bg-[rgb(30,30,47)] rounded-lg pt-[16.5px] pr-6 pb-[16.5px] pl-6 flex justify-center items-center gap-x-3 min-w-[230px]"
+                  onClick={handleLoginClick}
+                >
                   {/* TODO */}
-                  <p
-                    className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px"
-                  >
+                  <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
                     Get started now
                   </p>
                   <img

@@ -21,7 +21,7 @@ const Menu: React.FC<Props> = ({ className }) => {
       "/dictionary": "Dictionary",
       "/game": "Game",
       "/setting": "Setting",
-      "/how-to-use": 'How to use'
+      "/how-to-use": "How to use",
       // Thêm các đường dẫn khác vào đây nếu cần
     };
     const buttonName = pathToButtonName[location.pathname];
@@ -55,15 +55,21 @@ const Menu: React.FC<Props> = ({ className }) => {
     <div className="xl:w-full xl:min-w-[unset] xl:h-full flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px]">
       {/* Logo */}
       <div className="w-[234px] flex gap-x-3 min-w-0 mt-4 mx-auto">
-        <img className="w-10 min-w-0" src="/assets/70bee51749289912a11c3cd7287001ce.svg" alt="alt text" />
+        <img
+          className="w-10 min-w-0"
+          src="/assets/70bee51749289912a11c3cd7287001ce.svg"
+          alt="alt text"
+        />
         <h3 className="min-w-0 mt-1 mb-[3px]">
           <span className="font-extrabold text-[26px] leading-[1.26] font-PlusJakartaSans text-black">
             <span className="font-extrabold text-[rgb(83,169,205)]">Sign</span>
-            <span className="font-extrabold text-[rgb(255,255,255)]">Language</span>
+            <span className="font-extrabold text-[rgb(255,255,255)]">
+              Language
+            </span>
           </span>
         </h3>
       </div>
-      
+
       {/* Navigation Buttons */}
       <nav className="tn:mt-[18px] tn:mx-2 tn:mb-[39px] flex flex-col items-center mt-[48px] mr-[13px] mb-[39px] ml-3.5 cursor-pointer ">
         {[
@@ -95,7 +101,7 @@ const Menu: React.FC<Props> = ({ className }) => {
           {
             name: "Setting",
             src: "/assets/941e141cce9170be6727269019285b6c.svg",
-            path:"/setting",
+            path: "/setting",
           },
           {
             name: "About us",
@@ -122,7 +128,7 @@ const Menu: React.FC<Props> = ({ className }) => {
             <div className="xs:gap-x-4 tn:my-[9px] tn:mx-2 tn:gap-x-2 flex gap-x-[22px] my-[9px] mx-4">
               <div
                 className="bg-[image:var(--src)] bg-[center_center] bg-[length:cover] bg-no-repeat w-[25px] min-h-[25px]"
-                style={{ "--src": `url(${button.src})` }}
+                style={{ "--src": `url(${button.src})` } as any}
               />
               <div className="flex justify-center font-normal text-[16px] leading-[1.28] font-PlusJakartaSans text-center mt-0.5 cursor-pointer">
                 {button.name}

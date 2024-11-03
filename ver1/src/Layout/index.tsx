@@ -12,7 +12,7 @@ const Layout: React.FC<Props> = ({ children, className }) => {
       }`}
     >
       <Menu children={undefined} />
-      <article className="flex flex-col items-center gap-y-[117px] min-w-0 mb-[61px] mt-[40px] ml-8">
+      <article className="flex flex-col items-center gap-y-[117px] min-w-0 mb-[61px] mt-[40px] ml-8 min-h-[1000px]">
         {/* Main content area */}
         {children}
       </article>
