@@ -15,54 +15,90 @@ function Game() {
   const [options, setOptions] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [message, setMessage] = useState<React.ReactNode>("");
-  const [isAnswered, setIsAnswered] = useState<boolean>(false); 
+  const [isAnswered, setIsAnswered] = useState<boolean>(false);
 
   useEffect(() => {
     fetch("/data/WLASL_v0.3.json")
       .then((response) => response.json())
-      .then((json) => setData(json))
+      .then((json) => {
+        console.log("Data loaded:", json); // Log loaded data
+        setData(json);
+      })
       .catch((error) => console.error("Error loading JSON data:", error));
   }, []);
 
-  const pickNewVideo = useCallback(() => {
-    if (data.length === 0) return;
-
-    const validEntries = data.filter((entry) =>
-      entry.instances.some((instance) => instance.url.endsWith(".mp4") || instance.url.endsWith(".swf"))
+  const getValidEntries = (entries: GlossEntry[]) => {
+    return entries.filter((entry) =>
+      entry.instances.some(
+        (instance) =>
+          (instance.url.endsWith(".mp4") || instance.url.endsWith(".swf")) &&
+          !instance.url.includes("protected_media") &&
+          !instance.url.includes("aslsearch") &&
+          !instance.url.includes("handspeak") &&
+          !instance.url.includes("aslpro") &&
+          !instance.url.includes("aslsignbank")
+      )
     );
+  };
 
-    if (validEntries.length === 0) {
-      setMessage("No valid video available. Please try again later.");
-      return;
-    }
-
-    const randomIndex = Math.floor(Math.random() * validEntries.length);
-    const glossEntry = validEntries[randomIndex];
-    setSelectedGloss(glossEntry);
-
-    const mp4Instance = glossEntry.instances.find((instance) =>
-        instance.url.endsWith(".mp4") || instance.url.endsWith(".swf")
-    );
-    if (mp4Instance) {
-      setCurrentVideo(mp4Instance.url);
-    }
-
-    const correctWord = glossEntry.gloss;
+  const getRandomOptions = (correctWord: string, entries: GlossEntry[]) => {
+    console.log("Generating random options...");
     const optionsList = [correctWord];
-
     while (optionsList.length < 4) {
-      const randomWord = data[Math.floor(Math.random() * data.length)].gloss;
+      const randomWord = entries[Math.floor(Math.random() * entries.length)].gloss;
       if (!optionsList.includes(randomWord)) {
         optionsList.push(randomWord);
       }
     }
+    return optionsList.sort(() => Math.random() - 0.5);
+  };
 
-    setOptions(optionsList.sort(() => Math.random() - 0.5));
+  const pickNewVideo = useCallback(() => {
+    console.log("Picking a new video...");
+    if (data.length === 0) {
+      console.log("Data is empty. No entries to choose from.");
+      return;
+    }
+  
+    const validEntries = getValidEntries(data);
+    if (validEntries.length === 0) {
+      setMessage("No valid video available. Please try again later.");
+      console.log("No valid entries found after filtering.");
+      return;
+    }
+  
+    const glossEntry = validEntries[Math.floor(Math.random() * validEntries.length)];
+    setSelectedGloss(glossEntry);
+    console.log("Selected gloss entry:", glossEntry);
+  
+    const validInstance = glossEntry.instances.find(
+      (instance) =>
+        (instance.url.endsWith(".mp4") || instance.url.endsWith(".swf")) &&
+        !instance.url.includes("protected_media") &&
+        !instance.url.includes("aslsearch") &&
+        !instance.url.includes("handspeak") &&
+        !instance.url.includes("aslpro") &&
+        !instance.url.includes("aslsignbank")
+    );
+  
+    if (validInstance) {
+      setCurrentVideo(validInstance.url);
+      console.log("Selected video URL:", validInstance.url);
+    } else {
+      setMessage("No valid video available for this entry. Please try again.");
+      setCurrentVideo(""); 
+      console.log("No valid video found for this entry.");
+    }
+  
+    const optionsList = getRandomOptions(glossEntry.gloss, data);
+    console.log("Options generated:", optionsList);
+  
+    setOptions(optionsList);
     setSelectedOption(null);
     setMessage("");
-    setIsAnswered(false); // Reset answer status when picking a new video
+    setIsAnswered(false);
   }, [data]);
-
+  
   useEffect(() => {
     if (data.length > 0) {
       pickNewVideo();
@@ -72,12 +108,15 @@ function Game() {
   const handleOptionClick = (option: string) => {
     if (!isAnswered) {
       setSelectedOption(option);
+      console.log("Selected option:", option); // Log selected option
     }
   };
 
   const checkAnswer = () => {
+    console.log("Checking answer...");
     if (selectedOption === selectedGloss?.gloss) {
       setMessage("Correct! 🎉");
+      console.log("Answer is correct."); // Log correct answer
     } else {
       setMessage(
         <span>
@@ -85,10 +124,10 @@ function Game() {
           <span className="text-green-500">{selectedGloss?.gloss}</span>. ❌
         </span>
       );
+      console.log("Answer is incorrect. Correct answer:", selectedGloss?.gloss); // Log incorrect answer and correct answer
     }
-    setIsAnswered(true); 
+    setIsAnswered(true);
   };
-  
 
   return (
     <Layout>
@@ -96,8 +135,12 @@ function Game() {
         <div className="mx-auto w-full max-w-5xl p-6">
           <h1 className="text-4xl font-bold mb-6">Guess the Sign Game</h1>
           <hr className="mb-6 border-gray-300" />
-          <p className="mb-4 text-lg">Watch the sign language video carefully and try to guess the correct word that is being expressed in the video. </p>
-          <p className="mb-6 text-lg">After watching the video, select one of the options below that you believe corresponds to the word shown in the video.</p>
+          <p className="mb-4 text-lg">
+            Watch the sign language video carefully and try to guess the correct word that is being expressed in the video.
+          </p>
+          <p className="mb-6 text-lg">
+            After watching the video, select one of the options below that you believe corresponds to the word shown in the video.
+          </p>
           <hr className="mb-6 border-gray-300" />
 
           {/* Display video */}
@@ -120,10 +163,10 @@ function Game() {
               <button
                 key={index}
                 onClick={() => handleOptionClick(option)}
-                disabled={isAnswered} // Disable option buttons after checking answer
+                disabled={isAnswered}
                 className={`p-2 text-lg font-semibold rounded shadow ${
                   selectedOption === option
-                    ? "bg-blue-500 text-white" // Highlight selected option
+                    ? "bg-blue-500 text-white"
                     : "bg-black text-white"
                 } ${selectedOption} ${message && option === selectedGloss?.gloss && "bg-green-600"} 
                     ${message && option !== selectedGloss?.gloss && option === selectedOption ? "bg-red-600" : ""}`}

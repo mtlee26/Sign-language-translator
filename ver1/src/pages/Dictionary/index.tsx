@@ -8,6 +8,8 @@ interface IProps {
   className?: string;
 }
 
+const YOUTUBE_API_KEY = "AIzaSyCTXMbVAAFr8muCvl77GUjIdzRB7f8qdBE";
+
 function Dictionary(props: IProps) {
   const [glossary, setGlossary] = useState<{ [key: string]: number }>({});
   const [data, setData] = useState<GlossEntry[]>([]);
@@ -48,6 +50,21 @@ function Dictionary(props: IProps) {
       });
   }, []);
 
+  const checkYouTubeVideoStatus = async (videoId: string) => {
+    console.log(`Checking status for video ID: ${videoId}`);
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${YOUTUBE_API_KEY}&part=status`
+    );
+    const data = await response.json();
+    if (data.items && data.items.length > 0) {
+      const status = data.items[0].status;
+      console.log(`Video ID: ${videoId}, Privacy Status: ${status.privacyStatus}, Embeddable: ${status.embeddable}`);
+      return status.privacyStatus === "private" || status.embeddable === false;
+    }
+    console.log(`Video ID: ${videoId} is unavailable`);
+    return true;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
@@ -64,9 +81,31 @@ function Dictionary(props: IProps) {
     }
   };
 
-  const handleSuggestionClick = (word: string) => {
+  const handleSuggestionClick = async (word: string) => {
+    console.log(`Suggestion clicked: ${word}`);
     const entry = data.find((item) => item.gloss === word);
-    setSelectedGloss(entry || null);
+    if (entry) {
+      const filteredInstances = [];
+      for (const instance of entry.instances) {
+        if (instance.url.includes("youtube.com") || instance.url.includes("youtu.be")) {
+          let videoId = "";
+          if (instance.url.includes("youtube.com")) {
+            const urlParams = new URLSearchParams(new URL(instance.url).search);
+            videoId = urlParams.get("v") || "";
+          } else if (instance.url.includes("youtu.be")) {
+            videoId = instance.url.split("/").pop() || "";
+          }
+          if (videoId && !(await checkYouTubeVideoStatus(videoId))) {
+            filteredInstances.push(instance);
+          }
+        } else {
+          filteredInstances.push(instance);
+        }
+      }
+      setSelectedGloss({ ...entry, instances: filteredInstances });
+    } else {
+      setSelectedGloss(null);
+    }
     setQuery(word);
     setSuggestions([]);
     setNotFound(!entry);
@@ -74,20 +113,22 @@ function Dictionary(props: IProps) {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      console.log(`Enter key pressed with query: ${query}`);
       handleSuggestionClick(query);
     }
   };
 
   const handleVideoError = (url: string) => {
+    console.error(`Error loading video: ${url}`);
     setVideoErrors((prevErrors) => ({ ...prevErrors, [url]: true }));
   };
 
   const renderVideo = (url: string) => {
     if (videoErrors[url]) {
+      console.log(`Video error for URL: ${url}`);
       return null; 
     }
 
-    // Kiểm tra nếu là video YouTube và trích xuất videoId
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
       let videoId = "";
       if (url.includes("youtube.com")) {
