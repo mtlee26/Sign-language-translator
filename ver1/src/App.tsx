@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
-  Link,
   Switch,
   Redirect,
 } from "react-router-dom";
@@ -10,6 +9,7 @@ import Landing from "./pages/Landing";
 import Login from "pages/Login";
 import Signup from "pages/Signup";
 import Dashboard from "pages/Dashboard";
+import Game from "pages/Game";
 import AOS from "aos";
 import { isMobile } from "react-device-detect";
 
@@ -44,6 +44,7 @@ function App() {
         <Route exact path="/translate" component={Translator} />
         <Route exact path="/about-us" component={Aboutus} />
         <Route exact path="/dictionary" component={Dictionary} />
+        <Route exact path="/game" component={Game} />
         <Route path="/" exact />
       </Switch>
     </Router>

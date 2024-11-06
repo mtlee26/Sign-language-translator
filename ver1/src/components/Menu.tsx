@@ -116,6 +116,7 @@ const Menu: React.FC<Props> = ({ className }) => {
         ].map((button, index) => (
           <a
             key={index}
+            href={button.path}
             onMouseEnter={() => handleMouseEnter(button.name)}
             onMouseLeave={handleMouseLeave}
             className={`${buttonClass(
