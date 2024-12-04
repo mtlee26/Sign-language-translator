@@ -13,16 +13,26 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_holistic = mp.solutions.holistic
 
 sequences, labels = [], []
-no_sequence = 30
+no_sequence = 50
 
 actions = []
+    
 with open("data/words.txt", "r") as file:
-    actions = [line.strip() for line in file if line.strip()]
+    actions = [line.strip() for line in file]
+    # for line in file:
+    #     # Split each line into parts and get the word part
+    #     parts = line.strip().split()
+    #     if len(parts) > 1:
+    #         word = parts[1]  # This is the word after the index
+    #         actions.append(word) 
 label_map = {label:num for num, label in enumerate(actions)}
+print(actions)
+print(label_map)
+print(label_map["book"])
 
 def transform(path, gloss, instance):
-    data_path = "data/MP_data"
-    os.makedirs(data_path, exist_ok=True)
+    # data_path = "data/MP_data"
+    # os.makedirs(data_path, exist_ok=True)
     frame_number = 0
     window = []
     cap = cv2.VideoCapture(path)
@@ -39,31 +49,27 @@ def transform(path, gloss, instance):
                 ret, frame = cap.read()
                 if not ret:
                     break
-                # image, results = mediapipe_detection(frame, holistic)
 
-                # #draw_styled_landmarks(image, results)
-                # #pdb.set_trace()
-                # #cv2.imshow('OpenCV Feed', image)
-                # keypoints = extract_keypoints(results)
-                # print(len(keypoints))
-                # window.append(keypoints)
-                id = instance['video_id']
-                npy_path = f'data/MP_data/{gloss}/{id}/{frame_number}.npy'
+                image, results = mediapipe_detection(frame, holistic)
+                keypoints = extract_keypoints(results)
+
+                # id = instance['video_id']
+                # npy_path = f'data/MP_data/{gloss}/{id}/{frame_number}.npy'
         
-                if os.path.exists(npy_path):
-                    #print(f"Keypoints for frame {frame_number} already exist. Loading existing data.")
-                    keypoints = np.load(npy_path)
+                # if os.path.exists(npy_path):
+                #     #print(f"Keypoints for frame {frame_number} already exist. Loading existing data.")
+                #     keypoints = np.load(npy_path)
                     
-                else:
-                    os.makedirs(os.path.dirname(npy_path), exist_ok=True)
-                    image, results = mediapipe_detection(frame, holistic)
-                    keypoints = extract_keypoints(results)
+                # else:
+                #     os.makedirs(os.path.dirname(npy_path), exist_ok=True)
+                #     image, results = mediapipe_detection(frame, holistic)
+                #     keypoints = extract_keypoints(results)
                     
-                    # Save the keypoints to the .npy file
-                    try:
-                        np.save(npy_path, keypoints)
-                    except Exception as e:
-                        print(f"Error saving keypoints: {e}")
+                #     # Save the keypoints to the .npy file
+                #     try:
+                #         np.save(npy_path, keypoints)
+                #     except Exception as e:
+                #         print(f"Error saving keypoints: {e}")
                 window.append(keypoints)
                 if len(window) >= no_sequence or frame_count == 0:
                     break
@@ -82,14 +88,13 @@ def extract_frames(data, videos_folder):
             url = instance['url']
             video_id = instance['video_id']
             save_path = os.path.join(videos_folder, f"{video_id}.mp4")
-            print(f"Downloading {instance['video_id']}...")
-            download_video(url, save_path)
+            #print(f"Downloading {instance['video_id']}...")
+            #download_video(url, save_path)
             if transform(save_path, gloss['gloss'], instance):
-            	labels.append(label_map[gloss['gloss']])
+                labels.append(label_map[gloss['gloss']])
 
-#labels.append(label_map[action])
 json_data_path = "data/test.json"
-videos_folder = "data/videotest/" 
+videos_folder = "data/videos/" 
 data, video_data = load_json(json_data_path)
 extract_frames(data, videos_folder)
 try:
@@ -97,9 +102,14 @@ try:
     print("Shape of sequences array:", sequences_array.shape)
 except Exception as e:
     print(f"Error creating numpy array: {e}")
-X = np.array(sequences)
-# # X.shape
-# print(X.shape)
-y = to_categorical(labels).astype(int)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
-y_test.shape
+    
+sequences_path = "data/sequences.npy"
+np.save(sequences_path, np.array(sequences))
+
+actions_path = "data/actions.npy"
+np.save(actions_path, np.array(actions))
+
+lables_path = "data/labels.npy"
+np.save(lables_path, np.array(labels))
+
+

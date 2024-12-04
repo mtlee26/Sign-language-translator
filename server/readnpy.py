@@ -11,9 +11,12 @@ def load_keypoints(npy_path):
         print(f"Error loading keypoints: {e}")
 
 # Example usage
-npy_path = 'data/MP_data/69241/1.npy'
+npy_path = 'data/actions.npy'
 keypoints = load_keypoints(npy_path)
 
 if keypoints is not None:
     print("Keypoints loaded successfully:")
-    print(len(keypoints))
+    print(keypoints)
+    
+print(keypoints.tolist())
+
