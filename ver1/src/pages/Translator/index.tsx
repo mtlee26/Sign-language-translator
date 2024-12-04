@@ -2,6 +2,7 @@ import Layout from "Layout";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import useSpeechRecognition from "hooks/useSpeechRecognitionHook";
+import SignLanguageDetector from "model";
 
 interface IProps {
   className?: string;
@@ -190,7 +191,11 @@ function Translator(props: IProps) {
                 </div>
               </div>
             ) : (
-              <div className="flex space-x-6">
+				<div className="App">
+      <h1>Sign Language Detection</h1>
+      <SignLanguageDetector />
+    </div>
+             /*  <div className="flex space-x-6">
                 <div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
                   {buttonClicked === "upload" ? (
                     <div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
@@ -255,7 +260,7 @@ function Translator(props: IProps) {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */
             )}
           </div>
         </div>
