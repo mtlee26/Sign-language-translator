@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import os
-import pandas as pd
 import matplotlib.pyplot as plt
 import time
 import mediapipe as mp

@@ -2,7 +2,6 @@ import json
 import os
 import urllib.request
 import numpy as np
-import pandas as pd
 
 def load_json(file_path):
     with open(file_path, 'r') as f:

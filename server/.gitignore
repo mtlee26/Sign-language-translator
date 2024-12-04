@@ -1,2 +1,5 @@
 /data/videos
 /data/MP_data
+__pycache__
+.venv
+/data/videotest
