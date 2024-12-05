@@ -23,7 +23,7 @@ function Login(props: IProps) {
   }
   return (
     <section className={`login flex flex-col bg-white overflow-hidden ${props.className || ''}`}>
-      <div className="xs:mt-[22px] xs:mr-0 xs:mb-20 xs:ml-[13px] tn:mt-[22px] tn:mx-auto tn:mb-[50px] w-[92.43%] flex flex-col gap-y-[50px] max-w-[1330.987548828125px] mt-[22px] mb-[91px] ml-[13px]">
+      <div className="xs:mt-[22px] xs:mr-0 xs:mb-20 xs:ml-[13px] tn:mt-[22px] tn:mx-auto tn:mb-[50px] w-full flex flex-col gap-y-[50px] mt-[22px] mb-[91px] ml-[13px]">
         <div className="tn:gap-x-2 flex gap-x-3 z-[1]">
           <img className="w-10 object-contain" src={'/assets/70bee51749289912a11c3cd7287001ce.svg'} alt="alt text" />
           <p className="md:items-start mt-1 mb-[3px]">
@@ -34,8 +34,8 @@ function Login(props: IProps) {
           </p>
         </div>
 
-        <div className="md:flex-col md:items-center md:gap-y-[30px] w-[93.16%] flex justify-between gap-x-2.5 ml-auto">
-          <div className="md:w-full md:min-w-[unset] md:m-0 w-[512px] flex flex-col z-[1] min-w-0 mt-[92px] mb-[134px]">
+        <div className="md:flex-col md:items-center md:gap-y-[30px] w-[93.16%] flex justify-center gap-5">
+          <div className="md:w-full md:min-w-[unset] md:m-0 w-[512px] flex flex-col z-[1] min-w-0 mt-[92px] mb-[134px] mr-10">
             <p className="md:text-[36px] md:items-start xxs:text-[32px] font-bold text-[40px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)]">
               Login
             </p>
@@ -146,7 +146,7 @@ function Login(props: IProps) {
           </div>
 
           <img
-            className="md:w-full md:min-w-[unset] md:max-w-[563px] w-[563px] object-cover min-w-0"
+            className="md:w-full md:min-w-[unset] md:max-w-[563px] w-[563px] object-cover min-w-0 ml-10"
             src={'/assets/fbbd5af3dcd1a864ccd3cfdf2a8a8082.png'}
             alt="alt text"
           />

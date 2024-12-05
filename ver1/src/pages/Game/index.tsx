@@ -131,8 +131,7 @@ function Game() {
 
   return (
     <Layout>
-      <div className="bg-[#F5F6FA]">
-        <div className="mx-auto w-full max-w-5xl p-6">
+        <div>
           <h1 className="text-4xl font-bold mb-6">Guess the Sign Game</h1>
           <hr className="mb-6 border-gray-300" />
           <p className="mb-4 text-lg">
@@ -200,7 +199,6 @@ function Game() {
             </p>
           )}
         </div>
-      </div>
     </Layout>
   );
 }

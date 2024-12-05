@@ -21,7 +21,15 @@ function Dictionary(props: IProps) {
   const [videoErrors, setVideoErrors] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
-    fetch("/data/WLASL_v0.3.json")
+    loadData("/data/WLASL_v0.3.json", setData, "Could not load dictionary data. Please check the file path and try again.");
+  }, []);
+
+  useEffect(() => {
+    loadGlossary("/data/wlasl_class_list.txt", setGlossary, "Could not load glossary data.");
+  }, []);
+
+  const loadData = (url: string, setData: React.Dispatch<React.SetStateAction<any>>, errorMessage: string) => {
+    fetch(url)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to load JSON file");
         return response.json();
@@ -32,23 +40,22 @@ function Dictionary(props: IProps) {
       })
       .catch((error) => {
         console.error("Error loading JSON data:", error);
-        setLoadError("Could not load dictionary data. Please check the file path and try again.");
+        setLoadError(errorMessage);
       });
-  }, []);
+  };
 
-  useEffect(() => {
-    fetch("/data/wlasl_class_list.txt")
+  const loadGlossary = (url: string, setGlossary: React.Dispatch<React.SetStateAction<any>>, errorMessage: string) => {
+    fetch(url)
       .then((response) => {
-        if (!response.ok)
-          throw new Error(`Failed to load glossary file: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to load glossary file: ${response.statusText}`);
         return response.text();
       })
       .then((text) => setGlossary(parseGlossary(text)))
       .catch((error) => {
         console.error("Error loading glossary data:", error);
-        setLoadError("Could not load glossary data.");
+        setLoadError(errorMessage);
       });
-  }, []);
+  };
 
   const checkYouTubeVideoStatus = async (videoId: string) => {
     console.log(`Checking status for video ID: ${videoId}`);
@@ -85,23 +92,7 @@ function Dictionary(props: IProps) {
     console.log(`Suggestion clicked: ${word}`);
     const entry = data.find((item) => item.gloss === word);
     if (entry) {
-      const filteredInstances = [];
-      for (const instance of entry.instances) {
-        if (instance.url.includes("youtube.com") || instance.url.includes("youtu.be")) {
-          let videoId = "";
-          if (instance.url.includes("youtube.com")) {
-            const urlParams = new URLSearchParams(new URL(instance.url).search);
-            videoId = urlParams.get("v") || "";
-          } else if (instance.url.includes("youtu.be")) {
-            videoId = instance.url.split("/").pop() || "";
-          }
-          if (videoId && !(await checkYouTubeVideoStatus(videoId))) {
-            filteredInstances.push(instance);
-          }
-        } else {
-          filteredInstances.push(instance);
-        }
-      }
+      const filteredInstances = await filterInstances(entry.instances);
       setSelectedGloss({ ...entry, instances: filteredInstances });
     } else {
       setSelectedGloss(null);
@@ -109,6 +100,31 @@ function Dictionary(props: IProps) {
     setQuery(word);
     setSuggestions([]);
     setNotFound(!entry);
+  };
+
+  const filterInstances = async (instances: any[]) => {
+    const filteredInstances = [];
+    for (const instance of instances) {
+      if (instance.url.includes("youtube.com") || instance.url.includes("youtu.be")) {
+        let videoId = extractVideoId(instance.url);
+        if (videoId && !(await checkYouTubeVideoStatus(videoId))) {
+          filteredInstances.push(instance);
+        }
+      } else {
+        filteredInstances.push(instance);
+      }
+    }
+    return filteredInstances;
+  };
+
+  const extractVideoId = (url: string) => {
+    if (url.includes("youtube.com")) {
+      const urlParams = new URLSearchParams(new URL(url).search);
+      return urlParams.get("v") || "";
+    } else if (url.includes("youtu.be")) {
+      return url.split("/").pop() || "";
+    }
+    return "";
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -130,14 +146,7 @@ function Dictionary(props: IProps) {
     }
 
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      let videoId = "";
-      if (url.includes("youtube.com")) {
-        const urlParams = new URLSearchParams(new URL(url).search);
-        videoId = urlParams.get("v") || "";
-      } else if (url.includes("youtu.be")) {
-        videoId = url.split("/").pop() || "";
-      }
-
+      const videoId = extractVideoId(url);
       if (videoId) {
         const embedUrl = `https://www.youtube.com/embed/${videoId}`;
         return (
@@ -170,8 +179,7 @@ function Dictionary(props: IProps) {
 
   return (
     <Layout>
-      <div className="bg-[#F5F6FA]">
-        <div className="mx-auto w-full">
+        <div>
           <h1 className="text-4xl font-bold mb-6">Dictionary</h1>
           <hr className="mb-6 border-gray-300" />
           <p className="mb-4 text-lg">Easily look up words and phrases in sign language.</p>
@@ -207,7 +215,6 @@ function Dictionary(props: IProps) {
             </div>
           ) : null}
         </div>
-      </div>
     </Layout>
   );
 }

@@ -84,8 +84,7 @@ function Translator(props: IProps) {
 
   return (
     <Layout>
-      <div className="bg-[#F5F6FA]">
-        <div className="mx-auto">
+        <div>
           <h1 className="text-4xl font-bold mb-6">Translator</h1>
           <hr className="mb-6 border-gray-300" />
           <p className="mb-4 text-lg">
@@ -259,7 +258,6 @@ function Translator(props: IProps) {
             )}
           </div>
         </div>
-      </div>
     </Layout>
   );
 }
