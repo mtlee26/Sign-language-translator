@@ -2,13 +2,11 @@ import React, { useRef, useState, useEffect } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import * as Holistic from '@mediapipe/holistic';
 import { Camera } from '@mediapipe/camera_utils';
-
+import axios from 'axios';
 
 	const SignLanguageDetector: React.FC = () => {
-		// State variables
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
 		const [prediction, setPrediction] = useState<string>('ASLToText');
-		const [model, setModel] = useState<tf.LayersModel | null>(null);
 		const [isCameraOn, setIsCameraOn] = useState<boolean>(false);
 		const videoRef = useRef<HTMLVideoElement>(null);
 		const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,21 +14,9 @@ import { Camera } from '@mediapipe/camera_utils';
 		const [uploadPrediction, setUploadPrediction] = useState<string>('');
 		const holisticRef = useRef<Holistic.Holistic | null>(null);
 		const cameraRef = useRef<Camera | null>(null);
-
-		// Load TensorFlow.js model on component mount
+		const sequence = useRef<any[]>([]);
+  		const sentence = useRef<any[]>([]);
 		useEffect(() => {
-			const loadModel = async () => {
-				try {
-					const loadedModel = await tf.loadLayersModel('/models/your_model/model.json');
-					setModel(loadedModel);
-					console.log('TensorFlow.js model loaded successfully.');
-				} catch (error) {
-					console.error('Error loading TensorFlow.js model:', error);
-				}
-			};
-			loadModel();
-
-			// Initialize MediaPipe Holistic
 			const holistic = new Holistic.Holistic({
 				locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
 			});
@@ -47,17 +33,20 @@ import { Camera } from '@mediapipe/camera_utils';
 		});
 
 		useEffect(() => {
-			let intervalId: NodeJS.Timeout;
 			  const startCamera = async () => {
 				console.log("camera on")
 			  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 				try {
 				  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-				  if (videoRef.current) {
+				  if (videoRef.current && videoRef.current.srcObject !== stream) {
 					  videoRef.current.srcObject = stream;
 					  console.log('Stream assigned to video');
-					videoRef.current.play();
-					setIsCameraOn(true);
+					  //videoRef.current.play();
+					  if (videoRef.current && videoRef.current.paused) {
+						videoRef.current.play().catch(error => console.error('Error playing video:', error));;
+					  }
+					  setIsCameraOn(true);
+					  handleCameraStart();
 				  }
 				} catch (error) {
 				  console.error('Error accessing camera:', error);
@@ -66,7 +55,7 @@ import { Camera } from '@mediapipe/camera_utils';
 			};
 		
 			const processCameraFrame = () => {
-			  if (videoRef.current && canvasRef.current && model) {
+			  if (videoRef.current && canvasRef.current) {
 				const video = videoRef.current;
 				const canvas = canvasRef.current;
 				const ctx = canvas.getContext('2d');
@@ -77,93 +66,53 @@ import { Camera } from '@mediapipe/camera_utils';
 				}
 			  }
 			};
-		
-			// if (isCameraOn) {
-			//   intervalId = setInterval(processCameraFrame, 500); // Adjust the interval as needed
-			// }
-		
-			// return () => {
-			//   if (intervalId) clearInterval(intervalId);
-			  // };
-			  if (isCameraOn) {
-				startCamera();
-				intervalId = setInterval(processCameraFrame, 500); // Adjust the interval as needed
-			  }
-			  return () => {
-				if (intervalId) clearInterval(intervalId);
-		  
-				
-			  };
-		}, [isCameraOn, model]);
-		
-		
-		// useEffect(() => {
-		// 	const holistic = new Holistic.Holistic({
-		// 		locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
-		// 	});
-
-		// 	holistic.setOptions({
-		// 		modelComplexity: 1,
-		// 		smoothLandmarks: true,
-		// 		enableSegmentation: false,
-		// 		refineFaceLandmarks: true,
-		// 	});
-
-		// 	holistic.onResults(handleHolisticResults);
-		// 	holisticRef.current = holistic;
-
-
-		// 	let intervalId: NodeJS.Timeout;
-		// 	console.log("camera on")
-	
-
-			 
-		//   }, [isCameraOn, model]);
+			
+			if (isCameraOn && videoRef.current && !videoRef.current.srcObject) {
+				  startCamera();
+				  requestAnimationFrame(processCameraFrame);
+			};
+		}, [isCameraOn]);
 
 		const handleCameraButtonClick = () => {
 			setButtonClicked('camera');
-	
-			if (!isCameraOn) {
-				handleCameraStart();
-			}
+			setIsCameraOn(true);
 		};
 	
 		const extractKeypoints = (results: Holistic.Results) => {
-			const pose = results.poseLandmarks
-				? results.poseLandmarks.map((res) => [res.x, res.y, res.z, res.visibility]).flat()
-				: new Array(33 * 4).fill(0);
-
-			const face = results.faceLandmarks
-				? results.faceLandmarks.map((res) => [res.x, res.y, res.z]).flat()
-				: new Array(468 * 3).fill(0);
-
-			const leftHand = results.leftHandLandmarks
-				? results.leftHandLandmarks.map((res) => [res.x, res.y, res.z]).flat()
-				: new Array(21 * 3).fill(0);
-
-			const rightHand = results.rightHandLandmarks
-				? results.rightHandLandmarks.map((res) => [res.x, res.y, res.z]).flat()
-				: new Array(21 * 3).fill(0);
-
-			//return [...pose, ...face, ...leftHand, ...rightHand];
-			const combinedLandmarks = [...pose, ...face, ...leftHand, ...rightHand];
-			return tf.tensor([combinedLandmarks], [1, combinedLandmarks.length]);
+			const pose = results.poseLandmarks ? results.poseLandmarks.map((res) => [res.x, res.y, res.z, res.visibility]).flat() : Array(33 * 4).fill(0);
+			const face = results.faceLandmarks ? results.faceLandmarks.slice(0, 468).map((res) => [res.x, res.y, res.z]).flat() : Array(468 * 3).fill(0);
+			const leftHand = results.leftHandLandmarks ? results.leftHandLandmarks.map((res) => [res.x, res.y, res.z]).flat() : Array(21 * 3).fill(0);
+			const rightHand = results.rightHandLandmarks ? results.rightHandLandmarks.map((res) => [res.x, res.y, res.z]).flat() : Array(21 * 3).fill(0);
+    		const keypoints = [...pose, ...face, ...leftHand, ...rightHand];
+			return keypoints;
 		};
-
 
 		const handleHolisticResults = async (results: any) => {
 			if (canvasRef.current && videoRef.current) {
 				const canvasCtx = canvasRef.current.getContext('2d');
 				canvasCtx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 				canvasCtx?.drawImage(results.image, 0, 0, canvasRef.current.width, canvasRef.current.height);
-
-				// Use results.poseLandmarks or results.handLandmarks as input features to your model
-				if (results && model) {
-					const tensor = extractKeypoints(results);
-					const predictionResult = model.predict(tensor) as tf.Tensor;
-					const predictedClass = predictionResult.argMax(-1).dataSync()[0];
-					setPrediction(`Class: ${predictedClass}`);
-					tf.dispose([tensor, predictionResult]);
+				if (results) {
+					const keypoints = extractKeypoints(results);
+					sequence.current.push(keypoints);
+					console.log(sequence.current)
+					if (sequence.current.length >= 50) {
+						const seq = sequence.current
+						try {
+							const response = await axios.post('http://127.0.0.1:5000/predict', { seq });
+							console.log(response)
+							const predictedAction = response.data.word;
+							if (sentence.current.length === 0 || sentence.current[sentence.current.length - 1] !== predictedAction) {
+								sentence.current.push(predictedAction);
+							}
+							setPrediction(sentence.current.join(" "));
+							sequence.current = [];
+							console.log("reset seq", sequence.current)
+						  } catch (error) {
+							console.error("There was an error!", error);
+						  }
+						
+					}
 				}
 			}
 		};
@@ -171,12 +120,17 @@ import { Camera } from '@mediapipe/camera_utils';
 		// Handle real-time camera processing
 		const handleCameraStart = () => {
 			setIsCameraOn(true);
-
+			console.log(videoRef.current)
 			if (videoRef.current) {
 				console.log("open camera")
 				cameraRef.current = new Camera(videoRef.current!, {
 					onFrame: async () => {
-						await holisticRef.current?.send({ image: videoRef.current! });
+						console.log("holistic", holisticRef.current)
+						try {
+							await holisticRef.current?.send({ image: videoRef.current! });
+						} catch (error) {
+							console.error("Error while sending data to Holistic:", error);
+						}
 					},
 					width: 640,
 					height: 480,
@@ -202,7 +156,7 @@ import { Camera } from '@mediapipe/camera_utils';
 	
 		const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 			const file = event.target.files?.[0];
-			if (file && uploadVideoRef.current && model) {
+			if (file && uploadVideoRef.current) {
 				const videoElement = uploadVideoRef.current;
 				videoElement.src = URL.createObjectURL(file);
 				videoElement.onloadeddata = () => {
@@ -214,8 +168,8 @@ import { Camera } from '@mediapipe/camera_utils';
 	
 		const processUploadedVideo = (video: HTMLVideoElement) => {
 			const canvas = document.createElement('canvas');
-			canvas.width = 224; // Adjust based on your model's input size
-			canvas.height = 224;
+			canvas.width = 640;
+			canvas.height = 480;
 			const ctx = canvas.getContext('2d');
 	
 			const processFrame = () => {
@@ -224,14 +178,6 @@ import { Camera } from '@mediapipe/camera_utils';
 				if (ctx) {
 					ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 					const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-					//const tensor = preprocessImage(imageData);
-					//const tensor = extractKeypoints()
-	
-					//const predictionResult = model!.predict(tensor) as tf.Tensor;
-					//const predictedClass = predictionResult.argMax(-1).dataSync()[0];
-					//setUploadPrediction(`Class: ${predictedClass}`);
-	
-					//tf.dispose([tensor, predictionResult]);
 				}
 	
 				requestAnimationFrame(processFrame);
@@ -266,7 +212,7 @@ import { Camera } from '@mediapipe/camera_utils';
 								<video ref={uploadVideoRef} className="hidden" />
 								{/* Display prediction for uploaded video */}
 								{uploadPrediction && (
-									<div className="mt-4 text-center">
+									<div className="mt-4 text-lg">
 										<h3 className="text-lg font-bold">Prediction:</h3>
 										<p>{uploadPrediction}</p>
 									</div>
@@ -285,27 +231,16 @@ import { Camera } from '@mediapipe/camera_utils';
 									</button>
 									) : (
 										null	
-									/*<button
-										className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold"
-										onClick={handleCameraStart}
-									>
-										OPEN YOUR CAMERA
-									</button>*/
 								)}
 								{/* Video and Canvas Elements for Camera Processing */}
 								{isCameraOn && (
 									<div>
-										<video ref={videoRef} width="640" height="480" />
+										<video ref={videoRef} width="640" height="480" style={{ display: "none" }}/>
 										<canvas ref={canvasRef} width="640" height="480" />
 									</div>
 								)}
 								{/* Display prediction for camera */}
-								{prediction && (
-									<div className="mt-4 text-center">
-										<h3 className="text-lg font-bold">Prediction:</h3>
-										<p>{prediction}</p>
-									</div>
-								)}
+								
 							</div>
 						) : (
 							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
@@ -345,9 +280,13 @@ import { Camera } from '@mediapipe/camera_utils';
 
 					{/* Right Column */}
 					<div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
-						<div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300 flex items-center justify-center">
-							{/* Placeholder for output content (e.g., video preview or processed data) */}
-							<p className="text-gray-500">Processed Output Will Appear Here</p>
+						<div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300 flex">
+							{prediction ? (
+									<div className="mt-4 text-lg">
+										{/* <h3 className="text-lg font-bold">Prediction:</h3> */}
+										<p>{prediction}</p>
+									</div>
+								) : <p className="text-gray-500">Processed Output Will Appear Here</p>}
 						</div>
 						<div className="flex justify-end space-x-4 mt-6">
 							<button className="p-3 border border-gray-300 rounded-full">

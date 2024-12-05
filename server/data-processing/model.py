@@ -27,12 +27,11 @@ y = to_categorical(labels).astype(int)
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-
 actions = np.array(actions)
 log_dir = os.path.join('Logs')
 tb_callback = TensorBoard(log_dir=log_dir)
 model = Sequential()
-model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30,1662)))
+model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(50,1662)))
 model.add(LSTM(128, return_sequences=True, activation='relu'))
 model.add(LSTM(64, return_sequences=False, activation='relu'))
 model.add(Dense(64, activation='relu'))
@@ -52,7 +51,7 @@ model.summary()
 # res = model.predict(X_test)
 # print(actions[np.argmax(res[0])])
 
-model.save('model1.h5')
+model.save('model.h5')
 
 #model 1: 500 epochs, no early stopping
 #model 2: validation, early stopping
