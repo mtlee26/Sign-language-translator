@@ -8,6 +8,7 @@ import axios from 'axios';
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
 		const [prediction, setPrediction] = useState<string>('');
 		const [isCameraOn, setIsCameraOn] = useState<boolean>(false);
+		const [inputVisible, setInputVisible] = useState(true);
 		const videoRef = useRef<HTMLVideoElement>(null);
 		const canvasRef = useRef<HTMLCanvasElement>(null);
 		const [videoSrc, setVideoSrc] = useState<string | null>(null);
@@ -166,6 +167,8 @@ import axios from 'axios';
 			if (file) {
 				const videoUrl = URL.createObjectURL(file);
 				setVideoSrc(videoUrl);
+				setInputVisible(false);
+				setPrediction("")
 				if (uploadVideoRef.current) {
 					uploadVideoRef.current.src = videoUrl;
 					uploadVideoRef.current.play();
@@ -204,15 +207,16 @@ import axios from 'axios';
 								<h2 className="text-2xl mb-1">Choose a video</h2>
 								<h3>Upload a .mp4, .ogv or .webm</h3>
 								</>
-								)}
+							)}
+							{inputVisible && (
 								<input
 									type="file"
 									accept="video/mp4, video/ogg, video/webm"
 									onChange={handleVideoUpload}
-									className="opacity-0 absolute w-full h-full cursor-pointer"
+									className="opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer"
 									id="upload-input"
 								/>
-								
+							)}
 								{videoSrc && (
 									<div className="mt-4">
 										<video ref={uploadVideoRef} className="w-full rounded-lg" controls>
@@ -225,10 +229,10 @@ import axios from 'axios';
 								)}
 								<br />
 								<label htmlFor="upload-input">
-									{!videoSrc ? (<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer">
+									{!videoSrc ? (<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer" onClick={() => setInputVisible(true)}>
 										BROWSE YOUR COMPUTER
 									</button>) : 
-										(<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer">
+										(<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer" onClick={() => setInputVisible(true)}>
 											CHOOSE ANOTHER VIDEO
 										</button>)
 									}
