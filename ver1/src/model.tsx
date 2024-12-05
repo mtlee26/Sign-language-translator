@@ -6,12 +6,12 @@ import axios from 'axios';
 
 	const SignLanguageDetector: React.FC = () => {
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
-		const [prediction, setPrediction] = useState<string>('ASLToText');
+		const [prediction, setPrediction] = useState<string>('');
 		const [isCameraOn, setIsCameraOn] = useState<boolean>(false);
 		const videoRef = useRef<HTMLVideoElement>(null);
 		const canvasRef = useRef<HTMLCanvasElement>(null);
+		const [videoSrc, setVideoSrc] = useState<string | null>(null);
 		const uploadVideoRef = useRef<HTMLVideoElement>(null);
-		const [uploadPrediction, setUploadPrediction] = useState<string>('');
 		const holisticRef = useRef<Holistic.Holistic | null>(null);
 		const cameraRef = useRef<Camera | null>(null);
 		const sequence = useRef<any[]>([]);
@@ -34,7 +34,6 @@ import axios from 'axios';
 
 		useEffect(() => {
 			  const startCamera = async () => {
-				console.log("camera on")
 			  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 				try {
 				  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -75,7 +74,14 @@ import axios from 'axios';
 
 		const handleCameraButtonClick = () => {
 			setButtonClicked('camera');
+			if (videoSrc) {
+				console.log(videoSrc)
+				setVideoSrc(null)
+
+			}
+			
 			setIsCameraOn(true);
+			
 		};
 	
 		const extractKeypoints = (results: Holistic.Results) => {
@@ -99,7 +105,7 @@ import axios from 'axios';
 					if (sequence.current.length >= 50) {
 						const seq = sequence.current
 						try {
-							const response = await axios.post('http://127.0.0.1:5000/predict', { seq });
+							const response = await axios.post('http://localhost:5000/predict', { seq });
 							console.log(response)
 							const predictedAction = response.data.word;
 							if (sentence.current.length === 0 || sentence.current[sentence.current.length - 1] !== predictedAction) {
@@ -153,94 +159,100 @@ import axios from 'axios';
 			setButtonClicked('');
 			setPrediction('');
 		};
-	
-		const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+		const handleVideoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
 			const file = event.target.files?.[0];
-			if (file && uploadVideoRef.current) {
-				const videoElement = uploadVideoRef.current;
-				videoElement.src = URL.createObjectURL(file);
-				videoElement.onloadeddata = () => {
-					videoElement.play();
-					processUploadedVideo(videoElement);
-				};
+			console.log("file", file)
+			if (file) {
+				const videoUrl = URL.createObjectURL(file);
+				setVideoSrc(videoUrl);
+				if (uploadVideoRef.current) {
+					uploadVideoRef.current.src = videoUrl;
+					uploadVideoRef.current.play();
+				}
+				const formData = new FormData();
+				formData.append('video', file);
+				try {
+					const response = await fetch('http://localhost:5000/upload-video', {
+						method: 'POST',
+						body: formData,
+					});
+					if (response.ok) {
+						const result = await response.json();
+						console.log('Server response:', result);
+						setPrediction(result.prediction.join(" "));
+					} else {
+						console.error('Upload failed:', response.statusText);
+					}
+				} catch (error) {
+					console.error('Error uploading video:', error);
+				}
 			}
 		};
-	
-		const processUploadedVideo = (video: HTMLVideoElement) => {
-			const canvas = document.createElement('canvas');
-			canvas.width = 640;
-			canvas.height = 480;
-			const ctx = canvas.getContext('2d');
-	
-			const processFrame = () => {
-				if (video.paused || video.ended) return;
-	
-				if (ctx) {
-					ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-					const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				}
-	
-				requestAnimationFrame(processFrame);
-			};
-	
-			processFrame();
-		};
-	
+		
 		return (
-			<div className="flex flex-col items-center justify-center p-6">
 				<div className="flex space-x-6">
 					{/* Left Column */}
 					<div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
 						{buttonClicked === 'upload' ? (
-							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
+							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg relative">
+								{/* <h2 className="text-2xl mb-1">Choose a video</h2>
+								<h3>Upload a .mp4, .ogv or .webm</h3>
+								<br /> */}
+								{!videoSrc && (
+								<>
 								<h2 className="text-2xl mb-1">Choose a video</h2>
 								<h3>Upload a .mp4, .ogv or .webm</h3>
-								<br />
+								</>
+								)}
 								<input
 									type="file"
 									accept="video/mp4, video/ogg, video/webm"
 									onChange={handleVideoUpload}
-									className="hidden"
+									className="opacity-0 absolute w-full h-full cursor-pointer"
 									id="upload-input"
 								/>
-								<label htmlFor="upload-input">
-									<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer">
-										BROWSE YOUR COMPUTER
-									</button>
-								</label>
-								{/* Hidden video element for processing uploaded video */}
-								<video ref={uploadVideoRef} className="hidden" />
-								{/* Display prediction for uploaded video */}
-								{uploadPrediction && (
-									<div className="mt-4 text-lg">
-										<h3 className="text-lg font-bold">Prediction:</h3>
-										<p>{uploadPrediction}</p>
+								
+								{videoSrc && (
+									<div className="mt-4">
+										<video ref={uploadVideoRef} className="w-full rounded-lg" controls>
+											<source src={videoSrc} type="video/mp4" />
+											<source src={videoSrc} type="video/webm" />
+											<source src={videoSrc} type="video/ogg" />
+											<p>Your browser does not support the video tag.</p>
+										</video>
 									</div>
 								)}
+								<br />
+								<label htmlFor="upload-input">
+									{!videoSrc ? (<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer">
+										BROWSE YOUR COMPUTER
+									</button>) : 
+										(<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer">
+											CHOOSE ANOTHER VIDEO
+										</button>)
+									}
+								</label>
+								
 							</div>
 						) : buttonClicked === 'camera' ? (
 							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
-								<h2 className="text-2xl mb-1">Camera is {isCameraOn ? 'On' : 'Off'}</h2>
 								<br />
-								{isCameraOn ? (
+								{/* Video and Canvas Elements for Camera Processing */}
+									{isCameraOn && (
+										<div>
+											<video ref={videoRef} width="640" height="480" style={{ display: "none" }}/>
+											<canvas ref={canvasRef} width="640" height="480" />
+										</div>
+									)}
+								{isCameraOn && canvasRef ? (
 									<button
 										className="bg-red-500 text-[#ffffff] px-6 py-3 rounded-lg font-bold"
 										onClick={handleCameraStop}
 									>
 										STOP CAMERA
 									</button>
-									) : (
-										null	
-								)}
-								{/* Video and Canvas Elements for Camera Processing */}
-								{isCameraOn && (
-									<div>
-										<video ref={videoRef} width="640" height="480" style={{ display: "none" }}/>
-										<canvas ref={canvasRef} width="640" height="480" />
-									</div>
-								)}
-								{/* Display prediction for camera */}
-								
+									) : ( null )}						
 							</div>
 						) : (
 							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
@@ -306,7 +318,6 @@ import axios from 'axios';
 						</div>
 					</div>
 				</div>
-			</div>
 		);
 	};
 export default SignLanguageDetector;

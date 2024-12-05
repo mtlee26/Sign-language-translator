@@ -192,7 +192,6 @@ function Translator(props: IProps) {
               </div>
             ) : (
 				<div className="App">
-      <h1>Sign Language Detection</h1>
       <SignLanguageDetector />
     </div>
              /*  <div className="flex space-x-6">
