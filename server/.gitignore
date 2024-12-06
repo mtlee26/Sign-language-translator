@@ -5,3 +5,4 @@ __pycache__
 /data/videotest
 tfjs_env
 Logs
+/uploads
