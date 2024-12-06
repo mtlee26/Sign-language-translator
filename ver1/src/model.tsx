@@ -3,6 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import * as Holistic from '@mediapipe/holistic';
 import { Camera } from '@mediapipe/camera_utils';
 import axios from 'axios';
+import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 	const SignLanguageDetector: React.FC = () => {
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
@@ -84,7 +85,29 @@ import axios from 'axios';
 			setIsCameraOn(true);
 			
 		};
-	
+		const drawKeypoints = (results: Holistic.Results, ctx: any) => {
+			// Face
+			drawLandmarks(ctx, results.faceLandmarks, 
+				{color: '#32CD32' , radius: 1 });
+			drawConnectors(ctx, results.faceLandmarks,
+				Holistic.FACEMESH_TESSELATION, {color: '#7CFC00', lineWidth: 1 });
+			// Pose 
+			drawLandmarks(ctx, results.poseLandmarks, 
+				{color: '#500079', radius: 1 });
+			drawConnectors(ctx, results.poseLandmarks, 
+				Holistic.POSE_CONNECTIONS, {color: '#FF3030', lineWidth: 2 });
+			// Left Hand
+			drawLandmarks(ctx, results.leftHandLandmarks, 
+				{color: '#FFF', radius: 1 });
+			drawConnectors(ctx, results.leftHandLandmarks,
+				Holistic.HAND_CONNECTIONS, {color: '#FFF', lineWidth: 1 });
+			// Right Hand
+			drawLandmarks(ctx, results.rightHandLandmarks, 
+				{color: '#000', radius: 1 });
+			drawConnectors(ctx, results.rightHandLandmarks,
+				Holistic.HAND_CONNECTIONS, {color: '#000', lineWidth: 1 });
+			
+		}
 		const extractKeypoints = (results: Holistic.Results) => {
 			const pose = results.poseLandmarks ? results.poseLandmarks.map((res) => [res.x, res.y, res.z, res.visibility]).flat() : Array(33 * 4).fill(0);
 			const face = results.faceLandmarks ? results.faceLandmarks.slice(0, 468).map((res) => [res.x, res.y, res.z]).flat() : Array(468 * 3).fill(0);
@@ -100,6 +123,7 @@ import axios from 'axios';
 				canvasCtx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 				canvasCtx?.drawImage(results.image, 0, 0, canvasRef.current.width, canvasRef.current.height);
 				if (results) {
+					drawKeypoints(results, canvasCtx);
 					const keypoints = extractKeypoints(results);
 					sequence.current.push(keypoints);
 					console.log(sequence.current)
@@ -199,9 +223,6 @@ import axios from 'axios';
 					<div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
 						{buttonClicked === 'upload' ? (
 							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg relative">
-								{/* <h2 className="text-2xl mb-1">Choose a video</h2>
-								<h3>Upload a .mp4, .ogv or .webm</h3>
-								<br /> */}
 								{!videoSrc && (
 								<>
 								<h2 className="text-2xl mb-1">Choose a video</h2>
@@ -232,7 +253,7 @@ import axios from 'axios';
 									{!videoSrc ? (<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer" onClick={() => setInputVisible(true)}>
 										BROWSE YOUR COMPUTER
 									</button>) : 
-										(<button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer" onClick={() => setInputVisible(true)}>
+										(<button  className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold cursor-pointer"  onClick={() => setInputVisible(true)} onChange={()=>handleVideoUpload}>
 											CHOOSE ANOTHER VIDEO
 										</button>)
 									}
@@ -240,13 +261,12 @@ import axios from 'axios';
 								
 							</div>
 						) : buttonClicked === 'camera' ? (
-							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
-								<br />
+							<div className="flex flex-col items-center h-[300px] border border-gray-300 rounded-lg text-lg">
 								{/* Video and Canvas Elements for Camera Processing */}
 									{isCameraOn && (
-										<div>
-											<video ref={videoRef} width="640" height="480" style={{ display: "none" }}/>
-											<canvas ref={canvasRef} width="640" height="480" />
+										<div className='w-full h-full'>
+											<video ref={videoRef} className='w-full h-[300px]' style={{ display: "none" }}/>
+											<canvas ref={canvasRef} className='w-full h-[300px]'/>
 										</div>
 									)}
 								{isCameraOn && canvasRef ? (
