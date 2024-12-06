@@ -1,3 +1,4 @@
+import BgGlassmorphism from "components/BgGlassmorphism";
 import Menu from "components/Menu";
 
 interface Props {
@@ -10,6 +11,7 @@ const Layout: React.FC<Props> = ({ children, className }) => {
     <section
       className={`dashboard2 xl:flex-col  xl:gap-y-[30px] bg-[rgb(245,246,250)] flex gap-x-6 overflow-hidden ${className || ""}`}
     >
+    <BgGlassmorphism/>
       <div className="flex w-full">
         <Menu className="flex-none" children={undefined} /> 
         <article className="flex flex-col flex-grow gap-y-[117px] min-w-0 mb-[61px] mt-[40px] ml-8 min-h-[1000px]">

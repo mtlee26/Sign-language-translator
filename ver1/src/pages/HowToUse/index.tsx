@@ -100,7 +100,7 @@ function HowToUse(props: IProps) {
         <p className="mb-12 text-lg">
           Welcome to our app! Here's a step-by-step guide to help you make the most of its features:
         </p>
-        <div className="container mx-auto flex flex-wrap justify-center gap-6">
+        <div className="container mx-auto flex flex-wrap justify-center gap-10">
           {features.map((feature, index) => (
             <Feature
               key={index}
