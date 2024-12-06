@@ -19,6 +19,7 @@ import "./tailwind.css";
 import Translator from "pages/Translator";
 import Aboutus from "pages/About us";
 import Dictionary from "pages/Dictionary";
+import HowToUse from "pages/HowToUse";
 
 function App() {
   useEffect(() => {
@@ -41,6 +42,7 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/how-to-use" component={HowToUse} />
         <Route exact path="/translate" component={Translator} />
         <Route exact path="/about-us" component={Aboutus} />
         <Route exact path="/dictionary" component={Dictionary} />
