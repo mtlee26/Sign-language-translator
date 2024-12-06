@@ -1,8 +1,10 @@
 import Layout from "Layout";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import useSpeechRecognition from "hooks/useSpeechRecognitionHook";
 import SignLanguageDetector from "model";
+import { useTranslationService } from "spokenToSign";
+import axios from 'axios';
 
 interface IProps {
   className?: string;
@@ -15,8 +17,10 @@ function Translator(props: IProps) {
   const [buttonClicked, setButtonClicked] = useState("upload");
   const [isAddingMode, setIsAddingMode] = useState(false); 
   const [soundButtonClicked, setSoundButtonClicked] = useState(false); 
-  const history = useHistory();
-
+	const history = useHistory();
+	const [spokenLanguage, setSpokenLanguage] = useState("en"); // Default to English
+	const [signedLanguage, setSignedLanguage] = useState("ase"); // Default to American Sign Language
+	const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
   useEffect(() => {
     if (recognizedText) {
@@ -81,7 +85,58 @@ function Translator(props: IProps) {
   
       speechSynthesis.speak(utterance);
     }
-  };
+	};
+	
+	const {
+		translateSpokenToSigned,
+		spokenLanguages,
+	} = useTranslationService();
+
+	const handleTextChange = (e: any) => {
+		const newText = e.target.value
+		setText(newText)
+		console.log(newText)
+		if (newText.trim()) {
+			try {
+				const url = translateSpokenToSigned(newText, spokenLanguage, signedLanguage);
+				setVideoSrc(url)
+			} catch (error) {
+			  console.error('Error:', error);
+			}
+		} else {
+			setVideoSrc('')
+			console.log(videoSrc)
+		}
+	};
+
+	const handleDownloadPose = async () => {
+		if (videoSrc) {
+			try {
+				const response = await axios.get(videoSrc, { responseType: 'blob' });
+				const poseFile = new File([response.data], "pose.pose", { type: 'application/octet-stream' });
+				const formData = new FormData();
+				formData.append('pose', poseFile);
+			
+				const drawResponse = await axios.post('http://localhost:5000/draw_pose', formData, {
+				  headers: {
+					'Content-Type': 'multipart/form-data',
+				  },
+				  responseType: 'blob',
+				});
+			
+				const videoBlob = drawResponse.data;
+				const videoUrl = URL.createObjectURL(videoBlob);
+				const fileName = `${text.trim()}.mp4`;
+				const link = document.createElement('a');
+				link.href = videoUrl;
+				link.download = fileName;
+				link.click();
+				URL.revokeObjectURL(videoUrl);
+			  } catch (error) {
+				console.error("Error downloading pose file:", error);
+			  }
+		}
+	}
 
   return (
     <Layout>
@@ -134,11 +189,35 @@ function Translator(props: IProps) {
               <div className="flex space-x-6">
                 <div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
                   <textarea
-                    className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
-                    placeholder="Enter text here..."
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                  ></textarea>
+						className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
+						placeholder="Enter text here..."
+						value={text}
+						onChange={handleTextChange}
+					></textarea>
+					<div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+						{/* <select
+						value={spokenLanguage}
+						onChange={(e) => setSpokenLanguage(e.target.value)}
+						style={{ flex: 1, padding: '10px' }}
+						>
+						{spokenLanguages.map((lang) => (
+							<option key={lang} value={lang}>
+							{lang.toUpperCase()}
+							</option>
+						))}
+						</select> */}
+						<select
+							value={spokenLanguage}
+							onChange={(e) => setSpokenLanguage(e.target.value)}
+							style={{ flex: 1, padding: '10px' }}
+							>
+							{Object.entries(spokenLanguages).map(([langCode, langName]) => (
+								<option key={langCode} value={langCode}>
+								{langName}
+								</option>
+							))}
+						</select>
+					</div>
                   <div className="flex justify-between mt-6">
                     <div className="flex space-x-4">
                       <button
@@ -169,16 +248,24 @@ function Translator(props: IProps) {
                   </div>
                 </div>
                 <div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
-                  <div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300">
-                    {/* Translation output will go here */}
+                  <div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300 flex justify-center items-center">
+						{/* Translation output will go here */}
+						{videoSrc ? (
+							<div >
+								<pose-viewer src={videoSrc} width="100%" loop={true}></pose-viewer>
+							</div>
+						) : (
+							<p className="text-gray-500">Translated output will appear here.</p>
+						  )}
+				
                   </div>
                   <div className="flex justify-end space-x-4 mt-6">
-                    <button className="p-3 border border-gray-300 rounded-full">
+                    <button className="p-3 border border-gray-300 rounded-full" onClick={handleDownloadPose}>
                       <img
                         src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-128.png"
                         alt="Download"
                         className="w-6 h-6"
-                      />
+						/>
                     </button>
                     <button className="p-3 border border-gray-300 rounded-full">
                       <img
@@ -194,72 +281,6 @@ function Translator(props: IProps) {
 				<div className="App">
       <SignLanguageDetector />
     </div>
-             /*  <div className="flex space-x-6">
-                <div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
-                  {buttonClicked === "upload" ? (
-                    <div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
-                      <h2 className="text-2xl mb-1">Choose a video</h2>
-                      <h3>Upload a .mp4, .ogv or .webm</h3>
-                      <br />
-                      <button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold">
-                        BROWSE YOUR COMPUTER
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
-                      <h2 className="text-2xl mb-1">Camera is off</h2>
-                      <br />
-                      <button className="bg-[#1A73E8] text-[#ffffff] px-6 py-3 rounded-lg font-bold">
-                        OPEN YOUR CAMERA
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex justify-between mt-6">
-                    <div className="flex space-x-4">
-                      <button
-                        className="p-3 border border-gray-300 rounded-full"
-                        onClick={() => setButtonClicked("upload")}
-                      >
-                        <img
-                          src="https://cdn0.iconfinder.com/data/icons/glyphpack/40/upload-128.png"
-                          alt="Upload"
-                          className="w-6 h-6"
-                        />
-                      </button>
-                      <button
-                        className="p-3 border border-gray-300 rounded-full"
-                        onClick={() => setButtonClicked("camera")}
-                      >
-                        <img
-                          src="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-camera-128.png"
-                          alt="Camera"
-                          className="w-6 h-6"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
-                  <div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300"></div>
-                  <div className="flex justify-end space-x-4 mt-6">
-                    <button className="p-3 border border-gray-300 rounded-full">
-                      <img
-                        src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-128.png"
-                        alt="Download"
-                        className="w-6 h-6"
-                      />
-                    </button>
-                    <button className="p-3 border border-gray-300 rounded-full">
-                      <img
-                        src="https://cdn2.iconfinder.com/data/icons/boxicons-solid-vol-1/24/bxs-copy-128.png"
-                        alt="Copy"
-                        className="w-6 h-6"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div> */
             )}
           </div>
         </div>

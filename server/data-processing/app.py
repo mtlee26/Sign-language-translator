@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 import os
 import cv2
 import mediapipe as mp
+from pose_format import Pose
+from pose_format.pose_visualizer import PoseVisualizer
 
 from mp_keypoints import mediapipe_detection, draw_styled_landmarks, extract_keypoints
 
@@ -43,6 +45,30 @@ def process_video():
     video.save(video_path)
     result = predict_video(video_path)
     return jsonify({'prediction': result}), 200
+    
+@app.route('/draw_pose', methods=['POST'])
+def draw():
+    VIDEO_DIR = "generated_videos"
+    os.makedirs(VIDEO_DIR, exist_ok=True)
+    if 'pose' not in request.files:
+        return jsonify({'error': 'No video file in the request'}), 400
+    file = request.files['pose']
+    pose_data = file.read()
+
+    pose = Pose.read(pose_data)
+    v = PoseVisualizer(pose)
+    v.save_video("pose.mp4", v.draw())
+
+    with open("pose.mp4", "rb") as video_file:
+        video_content = video_file.read()
+
+    return Response(
+        video_content,
+        mimetype='video/mp4',
+        headers={
+            'Content-Disposition': 'attachment; filename="example.mp4"'
+        }
+    )
 
 def predict_video(video_path, size=50):
     cap = cv2.VideoCapture(video_path)
