@@ -17,7 +17,9 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 		const holisticRef = useRef<Holistic.Holistic | null>(null);
 		const cameraRef = useRef<Camera | null>(null);
 		const sequence = useRef<any[]>([]);
-  		const sentence = useRef<any[]>([]);
+		const sentence = useRef<any[]>([]);
+		const lastResults = useRef<Holistic.Results | null>(null);
+		const resultQueue: Holistic.Results[] = [];
 		useEffect(() => {
 			const holistic = new Holistic.Holistic({
 				locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
@@ -34,45 +36,83 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 			holisticRef.current = holistic;
 		});
 
-		useEffect(() => {
-			  const startCamera = async () => {
-			  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-				try {
-				  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-				  if (videoRef.current && videoRef.current.srcObject !== stream) {
-					  videoRef.current.srcObject = stream;
-					  console.log('Stream assigned to video');
-					  //videoRef.current.play();
-					  if (videoRef.current && videoRef.current.paused) {
-						videoRef.current.play().catch(error => console.error('Error playing video:', error));;
-					  }
-					  setIsCameraOn(true);
-					  handleCameraStart();
-				  }
-				} catch (error) {
-				  console.error('Error accessing camera:', error);
-				}
-			  }
-			};
-		
-			const processCameraFrame = () => {
-			  if (videoRef.current && canvasRef.current) {
-				const video = videoRef.current;
-				const canvas = canvasRef.current;
-				const ctx = canvas.getContext('2d');
-		
-				if (ctx) {
-				  // Draw the current frame from the video onto the canvas
-				  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-				}
-			  }
-			};
+		// useEffect(() => {
+		// 	  const startCamera = async () => {
+		// 	  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+		// 		try {
+		// 		  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+		// 		  if (videoRef.current && videoRef.current.srcObject !== stream) {
+		// 			  videoRef.current.srcObject = stream;
+		// 			  console.log('Stream assigned to video');
+		// 			  //videoRef.current.play();
+		// 			  if (videoRef.current && videoRef.current.paused) {
+		// 				videoRef.current.play().catch(error => console.error('Error playing video:', error));;
+		// 			  }
+		// 			  setIsCameraOn(true);
+		// 			  handleCameraStart();
+		// 		  }
+		// 		} catch (error) {
+		// 		  console.error('Error accessing camera:', error);
+		// 		}
+		// 	  }
+		// 	};
+
 			
-			if (isCameraOn && videoRef.current && !videoRef.current.srcObject) {
-				  startCamera();
-				  requestAnimationFrame(processCameraFrame);
-			};
-		}, [isCameraOn]);
+		
+		// 	const processCameraFrame = () => {
+		// 	  if (videoRef.current && canvasRef.current) {
+		// 		const video = videoRef.current;
+		// 		const canvas = canvasRef.current;
+		// 		const ctx = canvas.getContext('2d');
+		
+		// 		  if (ctx) {
+		// 			console.log("drawwww")
+		// 			// Draw the current frame from the video onto the canvas
+		// 			//ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+		// 			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+		// 			  if (lastResults.current) {
+		// 				console.log("draw keypoint")
+		// 				drawKeypoints(lastResults.current, ctx); // Chỉ vẽ nếu lastResults không phải là null
+		// 			}
+		// 			// if (resultQueue.length > 0) {
+		// 			// 	const results = resultQueue.shift(); // Lấy kết quả đầu tiên trong queue
+		// 			// 	if (results) {
+		// 			// 		drawKeypoints(results, ctx); // Vẽ keypoints lên canvas
+		// 			// 	}
+		// 			// }
+		// 		}
+		// 	  }
+		// 	};
+
+		// 	const frameRate = 24;
+		// 	let intervalId;
+			
+		// 	if (isCameraOn && videoRef.current && !videoRef.current.srcObject) {
+		// 		startCamera();
+		// 		intervalId = setInterval(processCameraFrame, 1000 / frameRate);
+		// 		//requestAnimationFrame(processCameraFrame);
+		// 	};
+
+
+		// }, [isCameraOn]);
+
+		useEffect(() => {
+			async function fetchData() {
+				try {
+					const response = await axios.get('http://localhost:5000/translate');
+					console.log(response)
+					setIsCameraOn(false)
+					setPrediction(response.data.word.join(" "));
+				} catch (error) {
+					console.error("There was an error!", error);
+				}
+			}
+			if (buttonClicked === "camera" && isCameraOn) {
+				setPrediction('')
+				fetchData();
+			  }
+			
+	  }, [buttonClicked, isCameraOn]);
 
 		const handleCameraButtonClick = () => {
 			setButtonClicked('camera');
@@ -123,10 +163,12 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 				canvasCtx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 				canvasCtx?.drawImage(results.image, 0, 0, canvasRef.current.width, canvasRef.current.height);
 				if (results) {
-					drawKeypoints(results, canvasCtx);
+					lastResults.current = results;
+					//drawKeypoints(results, canvasCtx);
+					console.log(canvasCtx)
 					const keypoints = extractKeypoints(results);
 					sequence.current.push(keypoints);
-					console.log(sequence.current)
+					// console.log(sequence.current)
 					if (sequence.current.length >= 50) {
 						const seq = sequence.current
 						try {
@@ -153,18 +195,19 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 			setIsCameraOn(true);
 			console.log(videoRef.current)
 			if (videoRef.current) {
-				console.log("open camera")
 				cameraRef.current = new Camera(videoRef.current!, {
 					onFrame: async () => {
-						console.log("holistic", holisticRef.current)
 						try {
-							await holisticRef.current?.send({ image: videoRef.current! });
+							const results = await holisticRef.current?.send({ image: videoRef.current! });
+							if (results) {
+								lastResults.current = results// Lưu trữ kết quả vào queue
+							  }
 						} catch (error) {
 							console.error("Error while sending data to Holistic:", error);
 						}
 					},
-					width: 640,
-					height: 480,
+					width: 320,
+					height: 240,
 				});
 				cameraRef.current.start();
 			}
@@ -263,20 +306,20 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 						) : buttonClicked === 'camera' ? (
 							<div className="flex flex-col items-center h-[300px] border border-gray-300 rounded-lg text-lg">
 								{/* Video and Canvas Elements for Camera Processing */}
-									{isCameraOn && (
+									{/* {isCameraOn && (
 										<div className='w-full h-full'>
 											<video ref={videoRef} className='w-full h-[300px]' style={{ display: "none" }}/>
 											<canvas ref={canvasRef} className='w-full h-[300px]'/>
 										</div>
-									)}
-								{isCameraOn && canvasRef ? (
+									)} */}
+								{/* {isCameraOn && canvasRef ? (
 									<button
 										className="bg-red-500 text-[#ffffff] px-6 py-3 rounded-lg font-bold"
 										onClick={handleCameraStop}
 									>
 										STOP CAMERA
 									</button>
-									) : ( null )}						
+									) : ( null )}						 */}
 							</div>
 						) : (
 							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
@@ -290,7 +333,11 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 								<button
 									className={`p-3 border border-gray-300 rounded-full ${buttonClicked === 'upload' ? 'bg-[#D2E3FC]' : ''
 										}`}
-									onClick={() => setButtonClicked('upload')}
+								onClick={() => {
+									setButtonClicked('upload')
+									setIsCameraOn(false)
+								}
+								}
 								>
 									<img
 										src="https://cdn0.iconfinder.com/data/icons/glyphpack/40/upload-128.png"
