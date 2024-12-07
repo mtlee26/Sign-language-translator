@@ -52,7 +52,7 @@ const Menu: React.FC<Props> = ({ className }) => {
   };
 
   return (
-    <div className="xl:w-full xl:min-w-[unset] xl:h-full flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px]">
+    <div className="xl:w-full xl:min-w-[unset]  flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px]">
       {/* Logo */}
       <div className="w-[234px] flex gap-x-3 min-w-0 mt-4 mx-auto">
         <img
@@ -116,6 +116,7 @@ const Menu: React.FC<Props> = ({ className }) => {
         ].map((button, index) => (
           <a
             key={index}
+            href={button.path}
             onMouseEnter={() => handleMouseEnter(button.name)}
             onMouseLeave={handleMouseLeave}
             className={`${buttonClass(

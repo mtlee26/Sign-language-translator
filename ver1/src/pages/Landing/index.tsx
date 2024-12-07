@@ -24,14 +24,13 @@ function Landing(props: IProps) {
       <div>
         {/* Section 1 */}
         <section className="flex flex-col z-[5] relative">
-          <div className="flex flex-col bg-[rgb(248,248,251)] overflow-hidden relative mt-[100px]">
+          <div className="flex flex-col bg-[rgb(248,248,251)] overflow-hidden relative mt-[50px]">
             <hr className="bg-[rgb(244,221,10)] w-10 h-0.5 relative min-h-[2px] mt-[179px] mb-[577px] ml-[3.54%]" />
-
-            <div className="w-[1338px] h-[480px] flex gap-x-[11px] absolute left-[51px] top-[108px]">
-              <div className="w-[625px] flex flex-col gap-y-[60px] min-w-0 mt-[62px]">
+            <div className="w-full  flex gap-x-[11px] absolute left-[51px] top-[108px] justify-center">
+              <div className="w-full flex flex-col gap-y-[60px] min-w-0 mt-[62px]">
                 <div className="flex flex-col gap-y-10">
-                  <div className="flex flex-col items-center gap-y-7">
-                    <p className="font-medium text-[16px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] capitalize w-[84%]">
+                  <div className="flex flex-col gap-y-7">
+                    <p className="font-medium text-[20px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] pl-12">
                       Connecting People Through Sign Language
                     </p>
                     <h2 className="font-bold text-[64px] leading-[1.2] font-Inter text-[rgb(30,30,47)] tracking-[-1.28px] w-full">
@@ -40,7 +39,7 @@ function Landing(props: IProps) {
                   </div>
 
                   <div className="flex flex-col border-solid border-[rgb(244,221,10)] border-t-[0px] border-r-[0px] border-b-[0px] border-l-2">
-                    <p className="font-normal text-[16px] leading-[1.87] font-Inter text-[rgb(30,30,47)] tracking-[-0.32px] ml-5">
+                    <p className="font-normal text-[20px] leading-[1.87] font-Inter text-[rgb(30,30,47)] tracking-[-0.32px] ml-5">
                       Our application facilitates effective communication for
                       the deaf and mute community, empowering them with the
                       skills to connect with others seamlessly.
@@ -53,7 +52,7 @@ function Landing(props: IProps) {
                   onClick={handleLoginClick}
                 >
                   {/* TODO */}
-                  <p className="font-semibold text-[18px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
+                  <p className="font-semibold text-[25px] leading-[1.27] font-PlusJakartaSans text-white capitalize min-w-0 mt-px">
                     Get Started Now
                   </p>
                   <img
@@ -64,14 +63,14 @@ function Landing(props: IProps) {
                 </button>
               </div>
 
-              <div className="w-[702px] flex flex-col gap-y-1.5 min-w-0">
+              <div className="w-full flex flex-col ml-10">
                 <img
                   className="w-[66px] z-[1]"
                   src={"/assets/490d3b6fd78d4c76cb6b577e73db6475.svg"}
                   alt="alt text"
                 />
                 <img
-                  className="rounded-[38px] w-[calc(100%_-_39px)] ml-[39px]"
+                  className="rounded-[38px]"
                   src={"/assets/aa9bf681a847a9f9c4894831fdae1ed1.png"}
                   alt="alt text"
                 />
@@ -159,7 +158,7 @@ function Landing(props: IProps) {
             <hr className="bg-[rgb(244,221,10)] w-10 h-0.5 min-h-[2px] mt-[120px] mb-[636px] ml-[39.38%]" />
           </div>
 
-          <div className="w-[1396px] h-[537px] flex flex-col items-center gap-y-[60px] absolute left-[22px] top-[111px]">
+          <div className="w-full flex flex-col items-center gap-y-[60px] absolute left-[22px]  right-[22px] top-[111px]">
             <div className="w-[34.46%] flex flex-col items-center gap-y-5">
               <p className="flex justify-end font-medium text-[16px] leading-tight font-PlusJakartaSans text-black text-right capitalize w-[63.62%]">
                 Breaking Communication Barriers
@@ -310,28 +309,28 @@ function Landing(props: IProps) {
         <section className="flex flex-col z-[3] relative">
           <div className="flex flex-col bg-[rgb(248,248,251)] overflow-hidden relative">
             <img
-              className="w-[calc(100%_-_42.36%)] h-0.5 mt-[155px] mr-[42.36%] mb-[836px] ml-auto"
+              className="w-full h-0.5 mt-[155px] mr-[42.36%] mb-[836px] ml-auto"
               src={"/assets/9aace562d6e61ade09eb6b38a0bf63d5.svg"}
               alt="alt text"
             />
           </div>
 
-          <div className="w-[1210px] h-[793px] flex flex-col gap-y-[120px] absolute left-[120px] top-[100px]">
-            <div className="flex justify-between gap-x-2.5">
+          <div className="w-full flex flex-col gap-y-[120px] absolute top-[100px] left-[50px] right-[50px]">
+            <div className="flex justify-between gap-4 p-4">
               <img
-                className="rounded-xl w-[550px] min-w-0"
+                className="rounded-xl"
                 src={"/assets/b41c9abef740d3d8a73172a344c7f835.png"}
                 alt="alt text"
               />
 
-              <div className="w-[540px] flex flex-col gap-y-[61px] min-w-0 mt-[85px] mb-[55px]">
+              <div className="w-full flex flex-col gap-y-[61px] min-w-0 mt-[85px] mb-[55px] ml-5">
                 <div className="flex flex-col gap-y-[42px]">
                   <h2 className="font-bold text-[36px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] capitalize">
                     Sign Language Translator
                   </h2>
 
                   <div className="flex flex-col border-solid border-[rgb(244,221,10)] border-t-[0px] border-r-[0px] border-b-[0px] border-l-2">
-                    <p className="font-normal text-[18px] leading-[1.66] font-Inter text-black tracking-[-0.36px] mb-[19px] ml-5">
+                    <p className="font-normal text-[18px] leading-[1.66] font-Inter text-black tracking-[-0.36px] mb-[19px] ml-5 mr-10">
                       Convert your text or speech into sign language animations,
                       enabling effective communication between sign language
                       users and those unfamiliar with it.
@@ -436,9 +435,9 @@ function Landing(props: IProps) {
             alt="alt text"
           />
 
-          <div className="w-[1200px] h-[846px] flex flex-col gap-y-[120px] absolute left-[120px] top-[47px]">
+          <div className="w-full flex flex-col gap-y-[120px] absolute left-[50px] top-[47px]">
             <div className="flex justify-between gap-x-2.5">
-              <div className="w-[540px] flex flex-col gap-y-[60px] min-w-0 mt-[104px] mb-[21px]">
+              <div className="w-full flex flex-col gap-y-[60px] min-w-0 mt-[104px] mb-[21px]">
                 <div className="flex flex-col gap-y-10">
                   <h2 className="font-bold text-[36px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] capitalize">
                     Learn Sign Language
@@ -470,14 +469,14 @@ function Landing(props: IProps) {
                 </button>
               </div>
 
-              <div className="w-[603px] flex flex-col min-w-0">
+              <div className="w-full flex flex-col min-w-0">
                 <img
                   className="w-[65px] z-[1]"
                   src={"/assets/490d3b6fd78d4c76cb6b577e73db6475.svg"}
                   alt="alt text"
                 />
                 <img
-                  className="rounded-xl w-[89.39%] ml-auto"
+                  className="rounded-xl w-[89.39%]"
                   src={"/assets/2644587f68da83af7bd8c79a26347f9e.png"}
                   alt="alt text"
                 />
@@ -561,10 +560,10 @@ function Landing(props: IProps) {
           <div className="bg-[rgb(30,30,47)] w-full h-[221px] absolute left-0 bottom-0" />
           <hr className="bg-[rgb(244,221,10)] w-10 h-0.5 relative min-h-[2px] mt-[130px] mb-[905px] ml-[8.33%]" />
 
-          <div className="w-[1200px] h-[816px] flex flex-col gap-y-[120px] absolute left-[120px] top-[121px]">
+          <div className="w-full flex flex-col gap-y-[120px] absolute left-[50px] top-[121px]">
             <div className="flex flex-col gap-y-[60px]">
               <div className="w-[289px] flex flex-col items-center gap-y-5">
-                <p className="font-medium text-[16px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] capitalize w-[65.4%]">
+                <p className="font-medium text-[16px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] ml-10">
                   Testimonials
                 </p>
                 <h2 className="font-bold text-[36px] leading-tight font-PlusJakartaSans text-[rgb(30,30,47)] capitalize">
@@ -572,8 +571,8 @@ function Landing(props: IProps) {
                 </h2>
               </div>
 
-              <div className="flex gap-x-5">
-                <div className="flex flex-col bg-white rounded-xl w-[590px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.12)] min-w-0">
+              <div className="flex justify-center gap-x-5">
+                <div className="flex flex-col bg-white rounded-xl w-full shadow-[0px_4px_20px_0px_rgba(0,0,0,0.12)] min-w-0">
                   <div className="flex flex-col gap-y-6 mt-7 mx-7 mb-10">
                     <div className="flex gap-x-6">
                       <img
@@ -582,7 +581,7 @@ function Landing(props: IProps) {
                         alt="alt text"
                       />
 
-                      <div className="flex flex-col bg-[rgb(248,248,251)] rounded-lg w-[430px] min-w-0">
+                      <div className="flex flex-col bg-[rgb(248,248,251)] rounded-lg w-full min-w-0">
                         <div className="flex justify-between items-center gap-x-2.5 mt-4 mx-4 mb-[15px]">
                           <div className="w-[92px] flex flex-col gap-y-2 min-w-0">
                             <p className="font-bold text-[18px] leading-[1.27] font-PlusJakartaSans text-[rgb(30,30,47)] mr-7">
@@ -617,7 +616,7 @@ function Landing(props: IProps) {
                   </div>
                 </div>
 
-                <div className="flex flex-col bg-white rounded-xl w-[590px] shadow-[0px_4px_20px_0px_rgba(0,0,0,0.12)] min-w-0">
+                <div className="flex flex-col bg-white rounded-xl w-full shadow-[0px_4px_20px_0px_rgba(0,0,0,0.12)] min-w-0">
                   <div className="flex flex-col gap-y-6 mt-7 mx-7 mb-10">
                     <div className="flex gap-x-6">
                       <img

@@ -17,25 +17,25 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const suggestionRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      suggestionRef.current &&
-      !suggestionRef.current.contains(event.target as Node)
-    ) {
-      // Clear input using a synthetic input event
-      const syntheticEvent = {
-        target: { value: "" },
-      } as React.ChangeEvent<HTMLInputElement>;
-      onInputChange(syntheticEvent); // Clear input
-    }
-  };
-
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionRef.current &&
+        !suggestionRef.current.contains(event.target as Node)
+      ) {
+        // Clear input using a synthetic input event
+        const syntheticEvent = {
+          target: { value: "" },
+        } as React.ChangeEvent<HTMLInputElement>;
+        onInputChange(syntheticEvent); // Clear input
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [onInputChange]);
 
   return (
     <div className="relative">

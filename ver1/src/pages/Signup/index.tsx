@@ -37,12 +37,13 @@ const Signup: React.FC<IProps> = (props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form Data:', formData);
+    history.push('/login');
   };
 
   return (
     <section className={`signup flex flex-col bg-white overflow-hidden ${props.className || ''}`}>
-      <div className="xs:mt-[46px] xs:mx-auto xs:mb-20 tn:mt-[46px] tn:mx-auto tn:mb-[50px] w-[85.76%] flex flex-col gap-y-[18px] max-w-[1234.9375px] mt-[46px] mx-auto mb-[104px]">
-        <div className="tn:gap-x-2 w-[234px] flex gap-x-3 z-[1] max-w-[85%] ml-auto">
+      <div className="xs:mt-[46px] xs:mx-auto xs:mb-20 tn:mt-[46px] tn:mx-auto tn:mb-[50px] w-full flex flex-col gap-y-[18px] mt-[46px] mb-[104px]">
+        <div className="tn:gap-x-2 w-[234px] flex gap-x-3 z-[1] max-w-[85%] ml-auto mr-10">
           <img className="w-10 object-cover" src={'/assets/70bee51749289912a11c3cd7287001ce.svg'} alt="Sign Language" />
           <p className="md:items-start mt-1 mb-[3px]">
             <span className="font-extrabold text-[26px] leading-[1.26] font-PlusJakartaSans text-black md:text-[24px] xxs:text-[22px]">
@@ -52,14 +53,14 @@ const Signup: React.FC<IProps> = (props) => {
           </p>
         </div>
 
-        <div className="md:flex-col md:items-center md:gap-y-[30px] flex justify-between gap-x-2.5">
+        <div className="md:flex-col md:items-center md:gap-y-[30px] flex justify-center gap-x-5">
           <img
-            className="md:w-full md:min-w-[unset] md:max-w-[486px] w-[486px] object-cover z-[1] min-w-0"
+            className="md:w-full md:min-w-[unset] md:max-w-[486px] w-[486px] object-cover z-[1] min-w-0 md:w-full md:min-w-[unset] md:max-w-[486px] w-[486px] object-cover z-[1] min-w-0 mr-10"
             src={'/assets/baefeaee9c8b144c0b7fa1ec44fe85d5.png'}
             alt="Signup illustration"
           />
 
-          <div className="md:w-full md:min-w-[unset] md:m-0 w-[640px] flex flex-col items-center min-w-0 mt-[42px] mb-5">
+          <div className="md:w-full md:min-w-[unset] md:m-0 w-[640px] flex flex-col items-center min-w-0 mt-[42px] mb-5 ml-10">
             <p className="md:text-[36px] md:items-start xxs:text-[32px] font-bold text-[40px] leading-tight font-PlusJakartaSans text-[rgba(49,49,49,0.878)] w-full">
               Sign up
             </p>
@@ -70,7 +71,7 @@ const Signup: React.FC<IProps> = (props) => {
             <form className="w-full flex flex-col gap-y-6 mt-12" onSubmit={handleSubmit}>
               <div className="xs:gap-x-4 xxs:grid-cols-[repeat(1,_minmax(0,_1fr))] grid grid-cols-[repeat(2,_minmax(0,_1fr))] content-start gap-y-6 gap-x-6">
                 {/* Input Fields */}
-                {[
+                {[ 
                   { label: 'First Name', name: 'firstName', type: 'text' },
                   { label: 'Last Name', name: 'lastName', type: 'text' },
                   { label: 'Email', name: 'email', type: 'email' },
@@ -127,33 +128,6 @@ const Signup: React.FC<IProps> = (props) => {
                 </span>
               </p>
             </form>
-
-            <div className="sm:flex-col sm:items-center sm:gap-y-[30px] flex gap-x-4 mt-10">
-              <hr className="sm:w-full sm:m-0 bg-[rgb(49,49,49)] w-[199px] h-px opacity-[0.25] min-h-[1px] mt-[9px] mb-2" />
-              <div className="sm:w-full font-normal text-[14px] leading-[1.28] font-PlusJakartaSans text-[rgb(49,49,49)] opacity-[0.5]">
-                Or Sign up with
-              </div>
-              <hr className="sm:w-full sm:m-0 bg-[rgb(49,49,49)] w-[198px] h-px opacity-[0.25] min-h-[1px] mt-[9px] mb-2" />
-            </div>
-
-            <div className="tn:flex-col tn:items-center tn:gap-y-[30px] tn:gap-x-2 flex gap-x-4 mt-10">
-              {/* Social media login options */}
-              <img
-                className="tn:w-full tn:min-w-[unset] tn:max-w-[160px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-40 object-cover min-w-0"
-                src={'/assets/de9f3005456292fe90e42f79e20e10dc.svg'}
-                alt="alt text"
-              />
-              <img
-                className="tn:w-full tn:min-w-[unset] tn:max-w-[160px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-40 object-cover min-w-0"
-                src={'/assets/1e58727831e4d8eac8c2399d37191fbc.svg'}
-                alt="alt text"
-              />
-              <img
-                className="tn:w-full tn:min-w-[unset] tn:max-w-[160px] rounded outline outline-[rgb(81,93,239)] outline-1 outline-offset-[-1px] w-40 object-cover min-w-0"
-                src={'/assets/28d74fcb9395a994ef47ddfa4d563aeb.svg'}
-                alt="alt text"
-              />
-            </div>
           </div>
         </div>
       </div>

@@ -141,22 +141,21 @@ function Translator(props: IProps) {
 
   return (
     <Layout>
-      <div className="bg-[#F5F6FA]">
-        <div className="mx-auto">
-          <h1 className="text-4xl font-bold mb-6">Translator</h1>
+        <div className="mx-auto rounded-lg">
+          <h1 className="text-5xl font-extrabold mb-6 text-[#1F618D]">Translator</h1>
           <hr className="mb-6 border-gray-300" />
           <p className="mb-4 text-lg">
-            Text to Sign Language: Converts written text into accurate sign
+          <span className="text-[#48C9B0] font-bold">Text to Sign Language</span> : Converts written text into accurate sign
             language animations, enabling easy understanding for
             hearing-impaired users.
           </p>
           <p className="mb-12 text-lg">
-            Sign Language to Text: Users can express sign language through a
+          <span className="text-[#48C9B0] font-bold">Sign Language to Text</span>  : Users can express sign language through a
             camera, which is recognized and converted back into text.
           </p>
           <hr className="mb-6 border-gray-300" />
 
-          <div className="bg-[#ffffff] p-4">
+          <div className="bg-[#ffffff] p-4 rounded-lg">
             <div className="flex space-x-6 mb-12">
               <button
                 className={`flex items-center space-x-3 px-6 py-3 rounded-lg ${
@@ -285,7 +284,6 @@ function Translator(props: IProps) {
             )}
           </div>
         </div>
-      </div>
     </Layout>
   );
 }
