@@ -4,7 +4,6 @@ import * as Holistic from '@mediapipe/holistic';
 import { Camera } from '@mediapipe/camera_utils';
 import axios from 'axios';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
-
 	const SignLanguageDetector: React.FC = () => {
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
 		const [prediction, setPrediction] = useState<string>('');
@@ -79,12 +78,11 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 			if (videoSrc) {
 				console.log(videoSrc)
 				setVideoSrc(null)
-
 			}
-			
 			setIsCameraOn(true);
 			
 		};
+		
 		const drawKeypoints = (results: Holistic.Results, ctx: any) => {
 			// Face
 			drawLandmarks(ctx, results.faceLandmarks, 
@@ -324,6 +322,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 									</div>
 								) : <p className="text-gray-500">Processed Output Will Appear Here</p>}
 						</div>
+						
 						<div className="flex justify-end space-x-4 mt-6">
 							<button className="p-3 border border-gray-300 rounded-full">
 								<img
