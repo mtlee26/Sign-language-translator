@@ -1,5 +1,5 @@
 import Layout from "Layout";
-import React from "react";
+import React, { useState } from "react";
 
 interface IProps {
   className?: string;
@@ -9,13 +9,32 @@ interface FeatureProps {
   title: string;
   content: JSX.Element;
   iconUrl: string;
+  isSelected: boolean;
+  onClick: () => void;
 }
 
-const Feature: React.FC<FeatureProps> = ({ title, content, iconUrl }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center w-[450px]">
-    <img src={iconUrl} alt={title} className="w-16 h-16 mb-4" />
-    <h2 className="text-xl font-semibold text-center">{title}</h2>
-    <div className="mt-4 text-gray-700 text-sm">{content}</div>
+const Feature: React.FC<FeatureProps> = ({
+  title,
+  content,
+  iconUrl,
+  isSelected,
+  onClick,
+}) => (
+  <div
+    className={`bg-white rounded-lg shadow-xl p-6 flex flex-col items-center justify-center w-[500px] h-[244px] cursor-pointer transition-all duration-300 ease-in-out transform hover:bg-gradient-to-t hover:from-[#48C9B0] hover:to-[#1F618D] 
+      ${
+      isSelected ? "scale-105 shadow-xl" : "hover:scale-105 hover:shadow-lg"
+    }`}
+    onClick={onClick}
+  >
+    {!isSelected ? (
+      <>
+        <img src={iconUrl} alt={title} className="w-16 h-16 mb-4" />
+        <h2 className="text-xl font-semibold text-center">{title}</h2>
+      </>
+    ) : (
+      <div className="text-gray-800 text-sm">{content}</div>
+    )}
   </div>
 );
 
@@ -92,13 +111,14 @@ const features = [
 ];
 
 function HowToUse(props: IProps) {
+  const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
   return (
     <Layout>
       <div>
-        <h1 className="text-4xl font-bold mb-6">How to use</h1>
+        <h1 className="text-5xl font-extrabold mb-6 text-[#1F618D]">How to use</h1>
         <hr className="mb-6 border-gray-300" />
         <p className="mb-12 text-lg">
-          Welcome to our app! Here's a step-by-step guide to help you make the most of its features:
+          Welcome to our app! Here's a  <span className="text-[#48C9B0]">step-by-step </span>guide to help you make the most of its features:
         </p>
         <div className="container mx-auto flex flex-wrap justify-center gap-10">
           {features.map((feature, index) => (
@@ -107,6 +127,10 @@ function HowToUse(props: IProps) {
               title={feature.title}
               content={feature.content}
               iconUrl={feature.iconUrl}
+              isSelected={selectedFeature === index}
+              onClick={() =>
+                setSelectedFeature(selectedFeature === index ? null : index)
+              }
             />
           ))}
         </div>

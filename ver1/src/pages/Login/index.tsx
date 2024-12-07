@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import cn from 'classnames';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom'; 
 
 interface IProps {
@@ -93,9 +92,12 @@ function Login(props: IProps) {
                 </p>
               </div>
 
-              <a className="tn:w-full tn:m-0 flex justify-end font-normal text-[14px] leading-[1.28] font-PlusJakartaSans text-[rgb(255,134,130)] text-right my-[3px]">
+              <button
+                className="tn:w-full tn:m-0 flex justify-end font-normal text-[14px] leading-[1.28] font-PlusJakartaSans text-[rgb(255,134,130)] text-right my-[3px]"
+                onClick={() => history.push('/forgot-password')}
+              >
                 Forgot Password
-              </a>
+              </button>
             </div>
 
             <button className="flex justify-center font-bold text-[14px] leading-[1.28] font-PlusJakartaSans text-white text-center bg-[rgb(30,30,47)] rounded pt-[15px] pr-2 pb-[15px] pl-2 mt-10 cursor-pointer"

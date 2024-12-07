@@ -59,18 +59,18 @@ function Game() {
       console.log("Data is empty. No entries to choose from.");
       return;
     }
-  
+
     const validEntries = getValidEntries(data);
     if (validEntries.length === 0) {
       setMessage("No valid video available. Please try again later.");
       console.log("No valid entries found after filtering.");
       return;
     }
-  
+
     const glossEntry = validEntries[Math.floor(Math.random() * validEntries.length)];
     setSelectedGloss(glossEntry);
     console.log("Selected gloss entry:", glossEntry);
-  
+
     const validInstance = glossEntry.instances.find(
       (instance) =>
         (instance.url.endsWith(".mp4") || instance.url.endsWith(".swf")) &&
@@ -80,25 +80,25 @@ function Game() {
         !instance.url.includes("aslpro") &&
         !instance.url.includes("aslsignbank")
     );
-  
+
     if (validInstance) {
       setCurrentVideo(validInstance.url);
       console.log("Selected video URL:", validInstance.url);
     } else {
       setMessage("No valid video available for this entry. Please try again.");
-      setCurrentVideo(""); 
+      setCurrentVideo("");
       console.log("No valid video found for this entry.");
     }
-  
+
     const optionsList = getRandomOptions(glossEntry.gloss, data);
     console.log("Options generated:", optionsList);
-  
+
     setOptions(optionsList);
     setSelectedOption(null);
     setMessage("");
     setIsAnswered(false);
   }, [data]);
-  
+
   useEffect(() => {
     if (data.length > 0) {
       pickNewVideo();
@@ -108,7 +108,7 @@ function Game() {
   const handleOptionClick = (option: string) => {
     if (!isAnswered) {
       setSelectedOption(option);
-      console.log("Selected option:", option); // Log selected option
+      console.log("Selected option:", option); 
     }
   };
 
@@ -116,7 +116,7 @@ function Game() {
     console.log("Checking answer...");
     if (selectedOption === selectedGloss?.gloss) {
       setMessage("Correct! 🎉");
-      console.log("Answer is correct."); // Log correct answer
+      console.log("Answer is correct."); 
     } else {
       setMessage(
         <span>
@@ -124,81 +124,99 @@ function Game() {
           <span className="text-green-500">{selectedGloss?.gloss}</span>. ❌
         </span>
       );
-      console.log("Answer is incorrect. Correct answer:", selectedGloss?.gloss); // Log incorrect answer and correct answer
+      console.log("Answer is incorrect. Correct answer:", selectedGloss?.gloss); 
     }
     setIsAnswered(true);
   };
 
   return (
     <Layout>
-        <div>
-          <h1 className="text-4xl font-bold mb-6">Guess the Sign Game</h1>
-          <hr className="mb-6 border-gray-300" />
-          <p className="mb-4 text-lg">
-            Watch the sign language video carefully and try to guess the correct word that is being expressed in the video.
-          </p>
-          <p className="mb-6 text-lg">
-            After watching the video, select one of the options below that you believe corresponds to the word shown in the video.
-          </p>
-          <hr className="mb-6 border-gray-300" />
-
-          {/* Display video */}
-          {currentVideo ? (
-            <div className="mb-6 flex justify-center">
+      <div>
+        <h1 className="text-5xl font-extrabold mb-6 text-[#1F618D]">Guess the Sign Game</h1>
+        <hr className="mb-6 border-gray-300" />
+        <p className="mb-4 text-lg">
+          Watch the sign language video carefully and try to guess the correct word that is being expressed in the video.
+        </p>
+        <p className="mb-6 text-lg">
+          After watching the video, select one of the options below that you believe corresponds to the word shown in the video.
+        </p>
+        <hr className="mb-6 border-gray-300" />
+        {/* Display video */}
+        {currentVideo ? (
+          <div className="mb-6 flex justify-center">
+            <div className="relative w-full max-w-2xl p-4 bg-gray-100 rounded-lg shadow-lg">
               <video
                 controls
                 src={currentVideo}
-                width="400"
-                className="w-full max-w-2xl h-auto rounded-lg shadow-lg"
+                className="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-105"
               />
             </div>
-          ) : (
-            <p className="text-center text-red-500">No video found.</p>
-          )}
-
-          {/* Display options */}
-          <div className="flex flex-wrap justify-center mb-6 space-x-4">
-            {options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => handleOptionClick(option)}
-                disabled={isAnswered}
-                className={`p-2 text-lg font-semibold rounded shadow ${
+          </div>
+        ) : (
+          <p className="text-center text-red-500 text-lg font-medium">No video found.</p>
+        )}
+        {/* Display options */}
+        <div className="grid grid-cols-2 gap-4 w-full max-w-md mx-auto mb-6">
+          {options.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleOptionClick(option)}
+              disabled={isAnswered}
+              className={`p-3 text-lg font-semibold rounded shadow text-center transform transition-all duration-300 
+                ${
                   selectedOption === option
-                    ? "bg-blue-500 text-white"
-                    : "bg-black text-white"
-                } ${selectedOption} ${message && option === selectedGloss?.gloss && "bg-green-600"} 
-                    ${message && option !== selectedGloss?.gloss && option === selectedOption ? "bg-red-600" : ""}`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-
-          {/* Check answer and new question buttons */}
-          <div className="flex justify-center space-x-4 mb-6">
-            <button
-              onClick={checkAnswer}
-              disabled={!selectedOption}
-              className="p-3 bg-green-600 text-white font-semibold rounded shadow"
+                    ? "bg-blue-600 text-white scale-105"
+                    : "bg-gray-800 text-white hover:bg-gray-600 hover:scale-105"
+                }
+                ${
+                  message && option === selectedGloss?.gloss
+                    ? "bg-green-500 text-white scale-110"
+                    : message && option !== selectedGloss?.gloss && option === selectedOption
+                    ? "bg-red-500 text-white scale-95"
+                    : ""
+                }`}
             >
-              Check Answer
+              {option}
             </button>
-            <button
-              onClick={pickNewVideo}
-              className="p-3 bg-yellow-600 text-white font-semibold rounded shadow"
-            >
-              Another Question
-            </button>
-          </div>
-
-          {/* Display result message */}
-          {message && (
-            <p className="text-center text-lg font-medium mt-4">
-              {message}
-            </p>
-          )}
+          ))}
         </div>
+        {/* Check answer and new question buttons */}
+        <div className="flex justify-center gap-6 mb-6">
+          <button
+            onClick={checkAnswer}
+            disabled={!selectedOption}
+            className={`p-2 w-40 text-lg font-semibold rounded-lg shadow-md transition-all duration-300 
+              ${
+                selectedOption
+                  ? "bg-green-600 hover:bg-green-500 text-white"
+                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
+              }`}
+          >
+            Check Answer
+          </button>
+          <button
+            onClick={pickNewVideo}
+            className="p-2 w-40 text-lg font-semibold rounded-lg shadow-md bg-yellow-600 hover:bg-yellow-500 text-white transition-all duration-300"
+          >
+            Another
+          </button>
+        </div>
+        {/* Display result message */}
+        {message && (
+          <div
+            className={`flex items-center justify-center gap-3 text-lg font-semibold mt-6 p-4 rounded-lg shadow-lg transition-all duration-500 
+              ${
+                message === "Correct! 🎉"
+                  ? "bg-green-100 text-green-800 border border-green-400"
+                  : "bg-red-100 text-red-800 border border-red-400"
+              }`}
+          >
+            {message === "Correct! 🎉" && <span>✔️</span>}
+            {message !== "Correct! 🎉" && <span>❌</span>}
+            <p>{message}</p>
+          </div>
+        )}
+      </div>
     </Layout>
   );
 }
