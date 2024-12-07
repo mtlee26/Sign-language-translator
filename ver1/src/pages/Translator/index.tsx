@@ -92,19 +92,20 @@ function Translator(props: IProps) {
 		spokenLanguages,
 	} = useTranslationService();
 
-	const handleTextChange = (e: any) => {
+	const handleTextChange = async (e: any) => {
 		const newText = e.target.value
 		setText(newText)
 		console.log(newText)
 		if (newText.trim()) {
 			try {
-				const url = translateSpokenToSigned(newText, spokenLanguage, signedLanguage);
+        const response = await axios.post('http://localhost:5000//translate-text', {text:newText});
+				const url = translateSpokenToSigned(response.data.translation, spokenLanguage, signedLanguage);
 				setVideoSrc(url)
 			} catch (error) {
 			  console.error('Error:', error);
 			}
 		} else {
-			setVideoSrc('')
+			setVideoSrc(null)
 			console.log(videoSrc)
 		}
 	};
@@ -206,7 +207,7 @@ function Translator(props: IProps) {
 							</option>
 						))}
 						</select> */}
-						<select
+						{/* <select
 							value={spokenLanguage}
 							onChange={(e) => setSpokenLanguage(e.target.value)}
 							style={{ flex: 1, padding: '10px' }}
@@ -216,7 +217,7 @@ function Translator(props: IProps) {
 								{langName}
 								</option>
 							))}
-						</select>
+						</select> */}
 					</div>
                   <div className="flex justify-between mt-6">
                     <div className="flex space-x-4">

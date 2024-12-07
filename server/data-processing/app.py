@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Response
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import tensorflow as tf
 import numpy as np
 import os
@@ -65,9 +65,20 @@ def translate():
                 cv2.setWindowProperty('Sign Language Detection', cv2.WND_PROP_TOPMOST, 1)
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
+        
         cap.release()
         cv2.destroyAllWindows()
     return jsonify({"word": sentence})
+
+@app.route('/translate-text', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
+def translate_text():
+    from googletrans import LANGUAGES, Translator
+    translator = Translator()
+    data = request.get_json()
+    text = data['text']
+    translations = translator.translate(text=text, src='auto', dest='en').text
+    return jsonify({"translation": translations}), 200
 
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
