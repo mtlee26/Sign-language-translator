@@ -5,7 +5,8 @@ import useSpeechRecognition from "hooks/useSpeechRecognitionHook";
 import SignLanguageDetector from "model";
 import { useTranslationService } from "spokenToSign";
 import axios from 'axios';
-
+import languages from "languages.json";
+import { cos } from "@tensorflow/tfjs";
 interface IProps {
   className?: string;
 }
@@ -18,7 +19,7 @@ function Translator(props: IProps) {
   const [isAddingMode, setIsAddingMode] = useState(false); 
   const [soundButtonClicked, setSoundButtonClicked] = useState(false); 
 	const history = useHistory();
-	const [spokenLanguage, setSpokenLanguage] = useState("en"); // Default to English
+	const [spokenLanguage, setSpokenLanguage] = useState(""); // Default to English
 	const [signedLanguage, setSignedLanguage] = useState("ase"); // Default to American Sign Language
 	const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
@@ -87,19 +88,19 @@ function Translator(props: IProps) {
     }
 	};
 	
-	const {
-		translateSpokenToSigned,
-		spokenLanguages,
-	} = useTranslationService();
-
+  const spokenToSigned = (text: string, spokenLanguage: string, signedLanguage: string) => {
+    const api = 'https://us-central1-sign-mt.cloudfunctions.net/spoken_text_to_signed_pose';
+    return `${api}?text=${encodeURIComponent(text)}&spoken=${spokenLanguage}&signed=${signedLanguage}`;
+  };
 	const handleTextChange = async (e: any) => {
 		const newText = e.target.value
 		setText(newText)
 		console.log(newText)
 		if (newText.trim()) {
 			try {
-        const response = await axios.post('http://localhost:5000//translate-text', {text:newText});
-				const url = translateSpokenToSigned(response.data.translation, spokenLanguage, signedLanguage);
+        const response = await axios.post('http://localhost:5000/translate-text', { text: newText , dest: 'en' });
+				const url = spokenToSigned(response.data.translation, spokenLanguage, signedLanguage);
+        console.log(response.data.language)
 				setVideoSrc(url)
 			} catch (error) {
 			  console.error('Error:', error);
@@ -109,6 +110,10 @@ function Translator(props: IProps) {
 			console.log(videoSrc)
 		}
 	};
+
+  const handleTranslate = async () => {
+
+  };
 
 	const handleDownloadPose = async () => {
 		if (videoSrc) {
@@ -188,36 +193,28 @@ function Translator(props: IProps) {
             {mode === "textToASL" ? (
               <div className="flex space-x-6">
                 <div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                    <select
+                      value={spokenLanguage}
+                      onChange={(e) => setSpokenLanguage(e.target.value)}
+                      style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+                    >
+                      <option value="" disabled>
+                        Choose language
+                      </option>
+                      {Object.entries(languages).map(([langCode, langName]) => (
+                        <option key={langCode} value={langCode}>
+                          {langName}
+                        </option>
+                      ))}
+                    </select>
+                </div>
                   <textarea
-						className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
-						placeholder="Enter text here..."
-						value={text}
-						onChange={handleTextChange}
-					></textarea>
-					<div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-						{/* <select
-						value={spokenLanguage}
-						onChange={(e) => setSpokenLanguage(e.target.value)}
-						style={{ flex: 1, padding: '10px' }}
-						>
-						{spokenLanguages.map((lang) => (
-							<option key={lang} value={lang}>
-							{lang.toUpperCase()}
-							</option>
-						))}
-						</select> */}
-						{/* <select
-							value={spokenLanguage}
-							onChange={(e) => setSpokenLanguage(e.target.value)}
-							style={{ flex: 1, padding: '10px' }}
-							>
-							{Object.entries(spokenLanguages).map(([langCode, langName]) => (
-								<option key={langCode} value={langCode}>
-								{langName}
-								</option>
-							))}
-						</select> */}
-					</div>
+                    className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
+                    placeholder="Enter text here..."
+                    value={text}
+                    onChange={handleTextChange}
+                  ></textarea>
                   <div className="flex justify-between mt-6">
                     <div className="flex space-x-4">
                       <button

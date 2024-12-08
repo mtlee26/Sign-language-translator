@@ -76,9 +76,16 @@ def translate_text():
     from googletrans import LANGUAGES, Translator
     translator = Translator()
     data = request.get_json()
-    text = data['text']
-    translations = translator.translate(text=text, src='auto', dest='en').text
-    return jsonify({"translation": translations}), 200
+    text = data.get('text')
+    src_language = data.get('src')
+    dest_language = data.get('dest')
+    if src_language is None:
+        src_language = translator.detect(text=text).lang
+    language = LANGUAGES.get(src_language, "Unknown language").capitalize()
+    if dest_language not in LANGUAGES or src_language not in LANGUAGES:
+        return jsonify({"error": "Invalid language code"}), 400
+    translations = translator.translate(text=text, src=src_language, dest=dest_language).text
+    return jsonify({"language": language, "translation": translations}), 200
 
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

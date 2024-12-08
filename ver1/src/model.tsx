@@ -4,6 +4,7 @@ import * as Holistic from '@mediapipe/holistic';
 import { Camera } from '@mediapipe/camera_utils';
 import axios from 'axios';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import languages from './languages.json';
 	const SignLanguageDetector: React.FC = () => {
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
 		const [prediction, setPrediction] = useState<string>('');
@@ -19,6 +20,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 		const sentence = useRef<any[]>([]);
 		const lastResults = useRef<Holistic.Results | null>(null);
 		const resultQueue: Holistic.Results[] = [];
+		const [destLanguage, setDestLanguage] = useState("en");
 		useEffect(() => {
 			const holistic = new Holistic.Holistic({
 				locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
@@ -263,7 +265,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 					{/* Left Column */}
 					<div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
 						{buttonClicked === 'upload' ? (
-							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg relative">
+							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg relative" >
 								{!videoSrc && (
 								<>
 								<h2 className="text-2xl mb-1">Choose a video</h2>
@@ -361,6 +363,19 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 					{/* Right Column */}
 					<div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
+						<div className="flex justify-between mb-6">
+						<select
+							value={destLanguage}
+							onChange={(e) => setDestLanguage(e.target.value)}
+							style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+							>
+							{Object.entries(languages).map(([langCode, langName]) => (
+								<option key={langCode} value={langCode}>
+								{langName}
+								</option>
+							))}
+						</select>
+						</div>
 						<div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300 flex">
 							{prediction ? (
 									<div className="mt-4 text-lg">
