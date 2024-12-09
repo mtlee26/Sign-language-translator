@@ -100,10 +100,11 @@ import languages from './languages.json';
 		useEffect(() => {
 			async function fetchData() {
 				try {
-					const response = await axios.get('http://localhost:5000/translate');
+					const response = await axios.post('http://localhost:5000/translate', { dest: destLanguage });
+					console.log("dest", destLanguage)
 					console.log(response)
 					setIsCameraOn(false)
-					setPrediction(response.data.word.join(" "));
+					setPrediction(response.data.translation)
 				} catch (error) {
 					console.error("There was an error!", error);
 				}
@@ -242,6 +243,7 @@ import languages from './languages.json';
 				}
 				const formData = new FormData();
 				formData.append('video', file);
+				formData.append('dest', destLanguage); // Add destination language to form data
 				try {
 					const response = await fetch('http://localhost:5000/upload-video', {
 						method: 'POST',
@@ -250,7 +252,7 @@ import languages from './languages.json';
 					if (response.ok) {
 						const result = await response.json();
 						console.log('Server response:', result);
-						setPrediction(result.prediction.join(" "));
+						setPrediction(result.prediction);
 					} else {
 						console.error('Upload failed:', response.statusText);
 					}
@@ -363,15 +365,15 @@ import languages from './languages.json';
 
 					{/* Right Column */}
 					<div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
-						<div className="flex justify-between mb-6">
+						<div className="flex justify-between mb-3 space-x-2">
 						<select
 							value={destLanguage}
 							onChange={(e) => setDestLanguage(e.target.value)}
-							style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
-							>
+							className="flex-1 p-2 border border-gray-300 rounded-md"
+						>
 							{Object.entries(languages).map(([langCode, langName]) => (
 								<option key={langCode} value={langCode}>
-								{langName}
+									{langName}
 								</option>
 							))}
 						</select>

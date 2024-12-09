@@ -22,7 +22,8 @@ function Translator(props: IProps) {
 	const [spokenLanguage, setSpokenLanguage] = useState(""); // Default to English
 	const [signedLanguage, setSignedLanguage] = useState("ase"); // Default to American Sign Language
 	const [videoSrc, setVideoSrc] = useState<string | null>(null);
-
+  const [srcLanguage, setSrc] = useState("");
+  const [dected, setDetected] = useState(true);
   useEffect(() => {
     if (recognizedText) {
       setText(recognizedText);
@@ -95,12 +96,13 @@ function Translator(props: IProps) {
 	const handleTextChange = async (e: any) => {
 		const newText = e.target.value
 		setText(newText)
-		console.log(newText)
+
 		if (newText.trim()) {
 			try {
         const response = await axios.post('http://localhost:5000/translate-text', { text: newText , dest: 'en' });
-				const url = spokenToSigned(response.data.translation, spokenLanguage, signedLanguage);
-        console.log(response.data.language)
+        setSrc(response.data.langName)
+				const url = spokenToSigned(response.data.translation, "en", signedLanguage);
+        console.log(response.data.translation)
 				setVideoSrc(url)
 			} catch (error) {
 			  console.error('Error:', error);
@@ -110,10 +112,6 @@ function Translator(props: IProps) {
 			console.log(videoSrc)
 		}
 	};
-
-  const handleTranslate = async () => {
-
-  };
 
 	const handleDownloadPose = async () => {
 		if (videoSrc) {
@@ -193,21 +191,27 @@ function Translator(props: IProps) {
             {mode === "textToASL" ? (
               <div className="flex space-x-6">
                 <div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                    <select
-                      value={spokenLanguage}
-                      onChange={(e) => setSpokenLanguage(e.target.value)}
-                      style={{ flex: 1, padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
-                    >
-                      <option value="" disabled>
-                        Choose language
-                      </option>
-                      {Object.entries(languages).map(([langCode, langName]) => (
-                        <option key={langCode} value={langCode}>
-                          {langName}
-                        </option>
-                      ))}
-                    </select>
+                <div className="flex justify-between mb-3 space-x-2">
+                <span className="flex-1 p-2 border border-gray-300 rounded-md flex items-center h-10">
+                  {dected ? `${srcLanguage} - Detected` : `${srcLanguage}`}
+                </span>
+                <select
+                  onChange={(e) => {
+                            setSrc(e.target.options[e.target.selectedIndex].text);
+                            setDetected(false);}}
+                  
+                  className="flex-1 p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">
+                  Choose
+                  </option>
+                  {Object.entries(languages).map(([langCode, langName]) => (
+                  <option key={langCode} value={langCode}>
+                    {langName}
+                  </option>
+                  ))}
+                </select>
+                    
                 </div>
                   <textarea
                     className="w-full h-[300px] p-4 border border-gray-300 rounded-lg text-lg"
@@ -244,17 +248,22 @@ function Translator(props: IProps) {
                     </div>
                   </div>
                 </div>
+                
                 <div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
+                  <div className="flex justify-between mb-3">
+                    <span className="flex-1 p-2 border bg-white border-gray-300 rounded-md items-center h-10">Sign Language</span>
+                  </div>
                   <div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300 flex justify-center items-center">
+                    
 						{/* Translation output will go here */}
 						{videoSrc ? (
 							<div >
 								<pose-viewer src={videoSrc} width="100%" loop={true}></pose-viewer>
 							</div>
 						) : (
+              
 							<p className="text-gray-500">Translated output will appear here.</p>
 						  )}
-				
                   </div>
                   <div className="flex justify-end space-x-4 mt-6">
                     <button className="p-3 border border-gray-300 rounded-full" onClick={handleDownloadPose}>

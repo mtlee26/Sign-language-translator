@@ -7,6 +7,7 @@ import cv2
 import mediapipe as mp
 from pose_format import Pose
 from pose_format.pose_visualizer import PoseVisualizer
+from googletrans import LANGUAGES, Translator
 
 from mp_keypoints import mediapipe_detection, draw_styled_landmarks, extract_keypoints
 
@@ -14,7 +15,8 @@ mp_holistic = mp.solutions.holistic
 
 app = Flask(__name__)
 
-CORS(app)
+# CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 model = tf.keras.models.load_model('model1.h5')
 actions = []
@@ -32,8 +34,50 @@ def predict():
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/translate', methods=['GET'])
+# @app.route('/translate', methods=['GET'])
+# def translate():
+#     sequence = []
+#     sentence = []
+#     cap = cv2.VideoCapture(0)
+#     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+#         while cap.isOpened():
+#             ret, frame = cap.read()
+#             if not ret:
+#                 break
+#             image, results = mediapipe_detection(frame, holistic)
+#             image = cv2.resize(image, (520, 390))
+#             draw_styled_landmarks(image, results)
+#             keypoints = extract_keypoints(results)
+
+#             sequence.append(keypoints)
+#             sequence = sequence[-50:]
+    
+#             if len(sequence) % 50 == 0:
+#                 res = model.predict(np.expand_dims(sequence, axis=0))[0]
+#                 # print(actions[np.argmax(res)])
+#                 if len(sentence) > 0: 
+#                     if actions[np.argmax(res)] != sentence[-1]:
+#                         sentence.append(actions[np.argmax(res)])
+#                 else:
+#                     sentence.append(actions[np.argmax(res)])
+            
+#             cv2.imshow('Sign Language Detection', image)
+#             cv2.moveWindow('Sign Language Detection', 250, 250)
+#             if cv2.getWindowProperty('Sign Language Detection', cv2.WND_PROP_VISIBLE) >= 1:
+#                 cv2.setWindowProperty('Sign Language Detection', cv2.WND_PROP_TOPMOST, 1)
+#             if cv2.waitKey(10) & 0xFF == ord('q'):
+#                 break
+        
+#         cap.release()
+#         cv2.destroyAllWindows()
+#     return jsonify({"word": sentence})
+
+@app.route('/translate', methods=['POST'])
+@cross_origin(origins='http://localhost:3000')
 def translate():
+    translator = Translator()
+    data = request.get_json()  # Retrieve JSON data from the request
+    dest_language = data.get('dest')
     sequence = []
     sentence = []
     cap = cv2.VideoCapture(0)
@@ -67,8 +111,11 @@ def translate():
                 break
         
         cap.release()
-        cv2.destroyAllWindows()
-    return jsonify({"word": sentence})
+        cv2.destroyAllWindows
+    sentence_str = ' '.join(sentence)
+    translations = translator.translate(text=sentence_str, src="en", dest=dest_language).text
+    print("Translations", translations)
+    return jsonify({"word": sentence, "translation": translations})
 
 @app.route('/translate-text', methods=['POST'])
 @cross_origin(origins='http://localhost:3000')
@@ -85,13 +132,14 @@ def translate_text():
     if dest_language not in LANGUAGES or src_language not in LANGUAGES:
         return jsonify({"error": "Invalid language code"}), 400
     translations = translator.translate(text=text, src=src_language, dest=dest_language).text
-    return jsonify({"language": language, "translation": translations}), 200
+    return jsonify({"langName": language, "langCode": src_language ,"translation": translations}), 200
 
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/upload-video', methods=['POST'])
 def process_video():
+    dest_language = request.form.get('dest')
     if 'video' not in request.files:
         return jsonify({'error': 'No video file in the request'}), 400
 
@@ -101,7 +149,7 @@ def process_video():
 
     video_path = os.path.join(UPLOAD_FOLDER, video.filename)
     video.save(video_path)
-    result = predict_video(video_path)
+    result = predict_video(video_path, dest_language)
     return jsonify({'prediction': result}), 200
     
 @app.route('/draw_pose', methods=['POST'])
@@ -128,7 +176,8 @@ def draw():
         }
     )
 
-def predict_video(video_path, size=50):
+def predict_video(video_path, dest_language, size=50):
+    translator = Translator()
     cap = cv2.VideoCapture(video_path)
     sequence = []
     sentence = []
@@ -151,7 +200,9 @@ def predict_video(video_path, size=50):
                 sequence = []
 
         cap.release()
-    return sentence
+    sentence_str = ' '.join(sentence)
+    translations = translator.translate(text=sentence_str, src="en", dest=dest_language).text
+    return translations
 
 if __name__ == '__main__':
     app.run(debug=True)
