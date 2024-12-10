@@ -18,7 +18,7 @@ app = Flask(__name__)
 # CORS(app)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
-model = tf.keras.models.load_model('model1.h5')
+model = tf.keras.models.load_model('test.h5')
 actions = []
 with open("data/words.txt", "r") as file:
     actions = [line.strip() for line in file if line.strip()]
@@ -34,43 +34,43 @@ def predict():
 UPLOAD_FOLDER = './uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# @app.route('/translate', methods=['GET'])
-# def translate():
-#     sequence = []
-#     sentence = []
-#     cap = cv2.VideoCapture(0)
-#     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-#         while cap.isOpened():
-#             ret, frame = cap.read()
-#             if not ret:
-#                 break
-#             image, results = mediapipe_detection(frame, holistic)
-#             image = cv2.resize(image, (520, 390))
-#             draw_styled_landmarks(image, results)
-#             keypoints = extract_keypoints(results)
+@app.route('/sl-detection', methods=['GET'])
+def sign_language_detection():
+    sequence = []
+    sentence = []
+    cap = cv2.VideoCapture(0)
+    with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            image, results = mediapipe_detection(frame, holistic)
+            image = cv2.resize(image, (520, 390))
+            draw_styled_landmarks(image, results)
+            keypoints = extract_keypoints(results)
 
-#             sequence.append(keypoints)
-#             sequence = sequence[-50:]
+            sequence.append(keypoints)
+            sequence = sequence[-50:]
     
-#             if len(sequence) % 50 == 0:
-#                 res = model.predict(np.expand_dims(sequence, axis=0))[0]
-#                 # print(actions[np.argmax(res)])
-#                 if len(sentence) > 0: 
-#                     if actions[np.argmax(res)] != sentence[-1]:
-#                         sentence.append(actions[np.argmax(res)])
-#                 else:
-#                     sentence.append(actions[np.argmax(res)])
+            if len(sequence) % 50 == 0:
+                res = model.predict(np.expand_dims(sequence, axis=0))[0]
+                # print(actions[np.argmax(res)])
+                if len(sentence) > 0: 
+                    if actions[np.argmax(res)] != sentence[-1]:
+                        sentence.append(actions[np.argmax(res)])
+                else:
+                    sentence.append(actions[np.argmax(res)])
             
-#             cv2.imshow('Sign Language Detection', image)
-#             cv2.moveWindow('Sign Language Detection', 250, 250)
-#             if cv2.getWindowProperty('Sign Language Detection', cv2.WND_PROP_VISIBLE) >= 1:
-#                 cv2.setWindowProperty('Sign Language Detection', cv2.WND_PROP_TOPMOST, 1)
-#             if cv2.waitKey(10) & 0xFF == ord('q'):
-#                 break
+            cv2.imshow('Sign Language Detection', image)
+            cv2.moveWindow('Sign Language Detection', 250, 250)
+            if cv2.getWindowProperty('Sign Language Detection', cv2.WND_PROP_VISIBLE) >= 1:
+                cv2.setWindowProperty('Sign Language Detection', cv2.WND_PROP_TOPMOST, 1)
+            if cv2.waitKey(10) & 0xFF == ord('q'):
+                break
         
-#         cap.release()
-#         cv2.destroyAllWindows()
-#     return jsonify({"word": sentence})
+        cap.release()
+        cv2.destroyAllWindows()
+    return jsonify({"word": sentence})
 
 @app.route('/translate', methods=['POST'])
 @cross_origin(origins='http://localhost:3000')

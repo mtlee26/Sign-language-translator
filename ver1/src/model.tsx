@@ -21,6 +21,7 @@ import languages from './languages.json';
 		const lastResults = useRef<Holistic.Results | null>(null);
 		const resultQueue: Holistic.Results[] = [];
 		const [destLanguage, setDestLanguage] = useState("en");
+		const [srcLanguage, setSrcLanguage] = useState("en");
 		useEffect(() => {
 			const holistic = new Holistic.Holistic({
 				locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
@@ -100,11 +101,11 @@ import languages from './languages.json';
 		useEffect(() => {
 			async function fetchData() {
 				try {
-					const response = await axios.post('http://localhost:5000/translate', { dest: destLanguage });
-					console.log("dest", destLanguage)
+					const response = await axios.get('http://localhost:5000/sl-detection');
+					// console.log("dest", destLanguage)
 					console.log(response)
 					setIsCameraOn(false)
-					setPrediction(response.data.translation)
+					setPrediction(response.data.word)
 				} catch (error) {
 					console.error("There was an error!", error);
 				}
@@ -114,7 +115,22 @@ import languages from './languages.json';
 				fetchData();
 			  }
 			
-	  }, [buttonClicked, isCameraOn]);
+		}, [buttonClicked, isCameraOn]);
+		
+		const translatePrediction = async (e: any) => {
+			setDestLanguage(e.target.value)
+			if (prediction) {
+				try {
+					console.log(destLanguage)
+					const response = await axios.post('http://localhost:5000/translate-text', { text: prediction, dest: e.target.value });
+					console.log(response)
+					setPrediction(response.data.translation)
+				} catch (error) {
+	
+				}
+			}
+			
+		}
 
 		const handleCameraButtonClick = () => {
 			setButtonClicked('camera');
@@ -368,7 +384,10 @@ import languages from './languages.json';
 						<div className="flex justify-between mb-3 space-x-2">
 						<select
 							value={destLanguage}
-							onChange={(e) => setDestLanguage(e.target.value)}
+							onChange={(e) => {
+								translatePrediction(e)
+							}
+							}
 							className="flex-1 p-2 border border-gray-300 rounded-md"
 						>
 							{Object.entries(languages).map(([langCode, langName]) => (

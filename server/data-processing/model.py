@@ -45,13 +45,13 @@ early_stopping = EarlyStopping(monitor='val_accuracy',
                                patience=10,
                                 mode='max',
                                restore_best_weights=True)
-model.fit(X_train, y_train, epochs=500, validation_data=(X_val, y_val), callbacks=[tb_callback, early_stopping])
+model.fit(X_train, y_train, epochs=400, validation_data=(X_val, y_val), callbacks=[tb_callback, early_stopping])
 model.summary()
 
 # res = model.predict(X_test)
 # print(actions[np.argmax(res[0])])
 
-model.save('model.h5')
+model.save('test.h5')
 
 #model 1: 500 epochs, no early stopping
 #model 2: validation, early stopping
