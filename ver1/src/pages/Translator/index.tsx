@@ -130,7 +130,7 @@ function Translator(props: IProps) {
     try {
       console.log("Sending request:", { sentence });
 
-      const response = await fetch("http://localhost:5000/generate-gif", {
+      const response = await fetch("http://localhost:8000/generate-gif", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -16,9 +16,9 @@ app = Flask(__name__)
 
 CORS(app)
 
-model = tf.keras.models.load_model('model1.h5')
+model = tf.keras.models.load_model('C:/Users/Thu Trang/Downloads/Sign-language-translator/server/model1.h5')
 actions = []
-with open("data/words.txt", "r") as file:
+with open("C:/Users/Thu Trang/Downloads/Sign-language-translator/server/data/words.txt", "r") as file:
     actions = [line.strip() for line in file if line.strip()]
 
 @app.route('/predict', methods=['POST'])
