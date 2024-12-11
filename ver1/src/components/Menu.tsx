@@ -12,7 +12,6 @@ const Menu: React.FC<Props> = ({ className }) => {
   const history = useHistory();
   const location = useLocation();
 
-  // Đồng bộ `currentButton` với URL hiện tại
   useEffect(() => {
     const pathToButtonName: { [key: string]: string } = {
       "/dashboard": "Dashboard",
@@ -20,9 +19,7 @@ const Menu: React.FC<Props> = ({ className }) => {
       "/about-us": "About us",
       "/dictionary": "Dictionary",
       "/game": "Game",
-      "/setting": "Setting",
       "/how-to-use": "How to use",
-      // Thêm các đường dẫn khác vào đây nếu cần
     };
     const buttonName = pathToButtonName[location.pathname];
     if (buttonName) {
@@ -40,19 +37,19 @@ const Menu: React.FC<Props> = ({ className }) => {
 
   const handleButtonClick = (buttonName: string, path: string) => {
     if (currentButton !== buttonName) {
-      setCurrentButton(buttonName); // Cập nhật button hiện tại
+      setCurrentButton(buttonName); 
     }
     history.push(path);
   };
 
   const buttonClass = (buttonName: string) => {
     return currentButton === buttonName || hoveredButton === buttonName
-      ? "bg-[rgb(84,169,206)] text-white" // Màu xanh khi button được chọn hoặc hover
-      : "bg-[rgb(30,30,47)] text-white"; // Màu mặc định
+      ? "bg-[rgb(84,169,206)] text-white" 
+      : "bg-[rgb(30,30,47)] text-white"; 
   };
 
   return (
-    <div className="xl:w-full xl:min-w-[unset]  flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px]">
+    <div className="xl:w-full xl:min-w-[unset] xl:h-full flex flex-col bg-[rgb(30,30,47)] w-[260px] z-[1] min-w-0 max-w-[260px] sticky top-0">
       {/* Logo */}
       <div className="w-[234px] flex gap-x-3 min-w-0 mt-4 mx-auto">
         <img
@@ -71,7 +68,7 @@ const Menu: React.FC<Props> = ({ className }) => {
       </div>
 
       {/* Navigation Buttons */}
-      <nav className="tn:mt-[18px] tn:mx-2 tn:mb-[39px] flex flex-col items-center mt-[48px] mr-[13px] mb-[39px] ml-3.5 cursor-pointer ">
+      <nav className="tn:mt-[18px] tn:mx-2 tn:mb-[39px] flex flex-col items-center mt-[48px] mr-[13px] mb-[39px] ml-3.5 cursor-pointer">
         {[
           {
             name: "Dashboard",
@@ -97,11 +94,6 @@ const Menu: React.FC<Props> = ({ className }) => {
             name: "Game",
             src: "/assets/b45a64961d14a6c73208b5ed43797774.svg",
             path: "/game",
-          },
-          {
-            name: "Setting",
-            src: "/assets/941e141cce9170be6727269019285b6c.svg",
-            path: "/setting",
           },
           {
             name: "About us",

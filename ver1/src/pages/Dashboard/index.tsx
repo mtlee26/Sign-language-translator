@@ -30,7 +30,7 @@ function Dashboard(props: IProps) {
 
   return (
     <Layout>
-      <article className="xl:w-full xl:min-w-[unset] xl:m-0 xs:gap-y-20 tn:gap-y-[50px] w-[1156px] flex flex-col items-center gap-y-[50px] min-w-0 max-w-[1156px] mb-[61px]">
+      <article className="xl:w-full xl:min-w-[unset] xl:m-0 xs:gap-y-20 tn:gap-y-[50px] w-[1156px] flex flex-col items-center gap-y-[50px] min-w-0 max-w-[1156px] mb-[61px] mx-auto">
         {/* Main content area */}
         <section
           className="flex flex-col bg-[image:var(--src)] bg-[center_center] bg-[length:cover] bg-no-repeat bg-white rounded-lg w-full z-[1] overflow-hidden"
