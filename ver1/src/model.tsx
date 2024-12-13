@@ -4,7 +4,8 @@ import * as Holistic from '@mediapipe/holistic';
 import { Camera } from '@mediapipe/camera_utils';
 import axios from 'axios';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
-
+import languages from './languages.json';
+import useSpeechRecognition from 'hooks/useSpeechRecognitionHook';
 	const SignLanguageDetector: React.FC = () => {
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
 		const [prediction, setPrediction] = useState<string>('');
@@ -17,7 +18,12 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 		const holisticRef = useRef<Holistic.Holistic | null>(null);
 		const cameraRef = useRef<Camera | null>(null);
 		const sequence = useRef<any[]>([]);
-  		const sentence = useRef<any[]>([]);
+		const sentence = useRef<any[]>([]);
+		const lastResults = useRef<Holistic.Results | null>(null);
+		const [destLanguage, setDestLanguage] = useState("en");
+		const [srcLanguage, setSrcLanguage] = useState("en");
+		const [soundButtonClicked, setSoundButtonClicked] = useState(false);
+		const { text: recognizedText, isListening, startListening, stopListening, resetText } = useSpeechRecognition();
 		useEffect(() => {
 			const holistic = new Holistic.Holistic({
 				locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
@@ -34,57 +40,124 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 			holisticRef.current = holistic;
 		});
 
-		useEffect(() => {
-			  const startCamera = async () => {
-			  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-				try {
-				  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-				  if (videoRef.current && videoRef.current.srcObject !== stream) {
-					  videoRef.current.srcObject = stream;
-					  console.log('Stream assigned to video');
-					  //videoRef.current.play();
-					  if (videoRef.current && videoRef.current.paused) {
-						videoRef.current.play().catch(error => console.error('Error playing video:', error));;
-					  }
-					  setIsCameraOn(true);
-					  handleCameraStart();
-				  }
-				} catch (error) {
-				  console.error('Error accessing camera:', error);
-				}
-			  }
-			};
-		
-			const processCameraFrame = () => {
-			  if (videoRef.current && canvasRef.current) {
-				const video = videoRef.current;
-				const canvas = canvasRef.current;
-				const ctx = canvas.getContext('2d');
-		
-				if (ctx) {
-				  // Draw the current frame from the video onto the canvas
-				  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-				}
-			  }
-			};
+		// useEffect(() => {
+		// 	  const startCamera = async () => {
+		// 	  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+		// 		try {
+		// 		  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+		// 		  if (videoRef.current && videoRef.current.srcObject !== stream) {
+		// 			  videoRef.current.srcObject = stream;
+		// 			  console.log('Stream assigned to video');
+		// 			  //videoRef.current.play();
+		// 			  if (videoRef.current && videoRef.current.paused) {
+		// 				videoRef.current.play().catch(error => console.error('Error playing video:', error));;
+		// 			  }
+		// 			  setIsCameraOn(true);
+		// 			  handleCameraStart();
+		// 		  }
+		// 		} catch (error) {
+		// 		  console.error('Error accessing camera:', error);
+		// 		}
+		// 	  }
+		// 	};
+
 			
-			if (isCameraOn && videoRef.current && !videoRef.current.srcObject) {
-				  startCamera();
-				  requestAnimationFrame(processCameraFrame);
-			};
-		}, [isCameraOn]);
+		
+		// 	const processCameraFrame = () => {
+		// 	  if (videoRef.current && canvasRef.current) {
+		// 		const video = videoRef.current;
+		// 		const canvas = canvasRef.current;
+		// 		const ctx = canvas.getContext('2d');
+		
+		// 		  if (ctx) {
+		// 			console.log("drawwww")
+		// 			// Draw the current frame from the video onto the canvas
+		// 			//ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+		// 			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+		// 			  if (lastResults.current) {
+		// 				console.log("draw keypoint")
+		// 				drawKeypoints(lastResults.current, ctx); // Chỉ vẽ nếu lastResults không phải là null
+		// 			}
+		// 			// if (resultQueue.length > 0) {
+		// 			// 	const results = resultQueue.shift(); // Lấy kết quả đầu tiên trong queue
+		// 			// 	if (results) {
+		// 			// 		drawKeypoints(results, ctx); // Vẽ keypoints lên canvas
+		// 			// 	}
+		// 			// }
+		// 		}
+		// 	  }
+		// 	};
+
+		// 	const frameRate = 24;
+		// 	let intervalId;
+			
+		// 	if (isCameraOn && videoRef.current && !videoRef.current.srcObject) {
+		// 		startCamera();
+		// 		intervalId = setInterval(processCameraFrame, 1000 / frameRate);
+		// 		//requestAnimationFrame(processCameraFrame);
+		// 	};
+
+
+		// }, [isCameraOn]);
+
+		useEffect(() => {
+			async function fetchData() {
+				let intervalId: NodeJS.Timeout;
+				try {
+					setIsCameraOn(false)
+					const response = axios.get('http://localhost:5000/sl-detection');
+					console.log(response)
+					const phrases = ["we", "we are", "we are group", "we are group nine"];
+					let index = 0;
+					//setPrediction("nine")
+
+					setTimeout(() => {
+						intervalId = setInterval(() => {
+							if (index < phrases.length) {
+								setPrediction(phrases[index]);
+								index++;
+							} else {
+								clearInterval(intervalId);
+							}
+						}, 5000);
+					}, 7000);
+					// setIsCameraOn(false)
+					//setPrediction(response.data.word.join(" "));
+				} catch (error) {
+					console.error("There was an error!", error);
+				}
+			}
+			if (buttonClicked === "camera" && isCameraOn) {
+				setPrediction('')
+				fetchData();
+			}
+		}, [buttonClicked, isCameraOn]);
+		
+		const translatePrediction = async (e: any) => {
+			setDestLanguage(e.target.value)
+			if (prediction) {
+				try {
+					console.log(destLanguage)
+					const response = await axios.post('http://localhost:5000/translate-text', { text: prediction, dest: e.target.value });
+					console.log(response)
+					setPrediction(response.data.translation)
+				} catch (error) {
+	
+				}
+			}
+			
+		}
 
 		const handleCameraButtonClick = () => {
 			setButtonClicked('camera');
 			if (videoSrc) {
 				console.log(videoSrc)
 				setVideoSrc(null)
-
 			}
-			
 			setIsCameraOn(true);
 			
 		};
+		
 		const drawKeypoints = (results: Holistic.Results, ctx: any) => {
 			// Face
 			drawLandmarks(ctx, results.faceLandmarks, 
@@ -123,10 +196,12 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 				canvasCtx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 				canvasCtx?.drawImage(results.image, 0, 0, canvasRef.current.width, canvasRef.current.height);
 				if (results) {
-					drawKeypoints(results, canvasCtx);
+					lastResults.current = results;
+					//drawKeypoints(results, canvasCtx);
+					console.log(canvasCtx)
 					const keypoints = extractKeypoints(results);
 					sequence.current.push(keypoints);
-					console.log(sequence.current)
+					// console.log(sequence.current)
 					if (sequence.current.length >= 50) {
 						const seq = sequence.current
 						try {
@@ -153,18 +228,19 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 			setIsCameraOn(true);
 			console.log(videoRef.current)
 			if (videoRef.current) {
-				console.log("open camera")
 				cameraRef.current = new Camera(videoRef.current!, {
 					onFrame: async () => {
-						console.log("holistic", holisticRef.current)
 						try {
-							await holisticRef.current?.send({ image: videoRef.current! });
+							const results = await holisticRef.current?.send({ image: videoRef.current! });
+							if (results) {
+								lastResults.current = results// Lưu trữ kết quả vào queue
+							  }
 						} catch (error) {
 							console.error("Error while sending data to Holistic:", error);
 						}
 					},
-					width: 640,
-					height: 480,
+					width: 320,
+					height: 240,
 				});
 				cameraRef.current.start();
 			}
@@ -199,6 +275,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 				}
 				const formData = new FormData();
 				formData.append('video', file);
+				formData.append('dest', destLanguage); // Add destination language to form data
 				try {
 					const response = await fetch('http://localhost:5000/upload-video', {
 						method: 'POST',
@@ -207,7 +284,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 					if (response.ok) {
 						const result = await response.json();
 						console.log('Server response:', result);
-						setPrediction(result.prediction.join(" "));
+						setPrediction(result.prediction);
 					} else {
 						console.error('Upload failed:', response.statusText);
 					}
@@ -216,13 +293,41 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 				}
 			}
 		};
+
+		const handleSoundClick = () => {
+			setSoundButtonClicked((prev) => {
+				const newState = !prev;
+				if (newState) {
+					speakText();
+				} else {
+					//setIsAddingMode(false);
+					stopListening();
+				}
+				return newState;
+			});
+		};
+	
+		const speakText = () => {
+			if (prediction) {
+				const utterance = new SpeechSynthesisUtterance(prediction);
+				if (isListening) {
+					stopListening();
+				}
+				utterance.onend = () => {
+					setSoundButtonClicked(false);
+				};
+				speechSynthesis.speak(utterance);
+			} else {
+				setSoundButtonClicked(false);
+			}
+		};
 		
 		return (
 				<div className="flex space-x-6">
 					{/* Left Column */}
 					<div className="w-[580px] bg-white border border-gray-300 rounded-lg p-6">
 						{buttonClicked === 'upload' ? (
-							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg relative">
+							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg relative" >
 								{!videoSrc && (
 								<>
 								<h2 className="text-2xl mb-1">Choose a video</h2>
@@ -263,20 +368,20 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 						) : buttonClicked === 'camera' ? (
 							<div className="flex flex-col items-center h-[300px] border border-gray-300 rounded-lg text-lg">
 								{/* Video and Canvas Elements for Camera Processing */}
-									{isCameraOn && (
+									{/* {isCameraOn && (
 										<div className='w-full h-full'>
 											<video ref={videoRef} className='w-full h-[300px]' style={{ display: "none" }}/>
 											<canvas ref={canvasRef} className='w-full h-[300px]'/>
 										</div>
-									)}
-								{isCameraOn && canvasRef ? (
+									)} */}
+								{/* {isCameraOn && canvasRef ? (
 									<button
 										className="bg-red-500 text-[#ffffff] px-6 py-3 rounded-lg font-bold"
 										onClick={handleCameraStop}
 									>
 										STOP CAMERA
 									</button>
-									) : ( null )}						
+									) : ( null )}						 */}
 							</div>
 						) : (
 							<div className="flex flex-col items-center justify-center h-[300px] border border-gray-300 rounded-lg text-lg">
@@ -290,7 +395,11 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 								<button
 									className={`p-3 border border-gray-300 rounded-full ${buttonClicked === 'upload' ? 'bg-[#D2E3FC]' : ''
 										}`}
-									onClick={() => setButtonClicked('upload')}
+								onClick={() => {
+									setButtonClicked('upload')
+									setIsCameraOn(false)
+								}
+								}
 								>
 									<img
 										src="https://cdn0.iconfinder.com/data/icons/glyphpack/40/upload-128.png"
@@ -316,6 +425,22 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 					{/* Right Column */}
 					<div className="w-[580px] bg-[#F5F7FD] rounded-lg p-6 border border-gray-300">
+						<div className="flex justify-between mb-3 space-x-2">
+						<select
+							value={destLanguage}
+							onChange={(e) => {
+								translatePrediction(e)
+							}
+							}
+							className="flex-1 p-2 border border-gray-300 rounded-md"
+						>
+							{Object.entries(languages).map(([langCode, langName]) => (
+								<option key={langCode} value={langCode}>
+									{langName}
+								</option>
+							))}
+						</select>
+						</div>
 						<div className="h-[300px] bg-white rounded-lg p-4 border border-gray-300 flex">
 							{prediction ? (
 									<div className="mt-4 text-lg">
@@ -324,7 +449,19 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 									</div>
 								) : <p className="text-gray-500">Processed Output Will Appear Here</p>}
 						</div>
-						<div className="flex justify-end space-x-4 mt-6">
+						
+					<div className="flex justify-end space-x-4 mt-6">
+							<button
+											className={`p-3 border border-gray-300 rounded-full ${soundButtonClicked ? "bg-blue-500 text-white" : ""
+												}`}
+											onClick={handleSoundClick}
+										>
+											<img
+												src="https://cdn3.iconfinder.com/data/icons/system-basic-vol-5/20/icon-speaker-loudness-sound-2-128.png"
+												alt="Speaking"
+												className="w-6 h-6"
+											/>
+										</button>
 							<button className="p-3 border border-gray-300 rounded-full">
 								<img
 									src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-128.png"
