@@ -2,7 +2,7 @@
 
 ## Giới thiệu
 
-Đây là repo GitHub cho bài tập lớn môn **Xây dựng ứng dụng cho người khuyết tật**.
+Đây là repo GitHub cho bài tập lớn môn **Tương tác người máy**.
 
 **Mã môn học**: [INT2041 55]  
 **Nhóm**: 9  
