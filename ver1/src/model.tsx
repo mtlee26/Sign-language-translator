@@ -5,6 +5,7 @@ import { Camera } from '@mediapipe/camera_utils';
 import axios from 'axios';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import languages from './languages.json';
+import useSpeechRecognition from 'hooks/useSpeechRecognitionHook';
 	const SignLanguageDetector: React.FC = () => {
 		const [buttonClicked, setButtonClicked] = useState<'upload' | 'camera' | ''>('');
 		const [prediction, setPrediction] = useState<string>('');
@@ -19,9 +20,10 @@ import languages from './languages.json';
 		const sequence = useRef<any[]>([]);
 		const sentence = useRef<any[]>([]);
 		const lastResults = useRef<Holistic.Results | null>(null);
-		const resultQueue: Holistic.Results[] = [];
 		const [destLanguage, setDestLanguage] = useState("en");
 		const [srcLanguage, setSrcLanguage] = useState("en");
+		const [soundButtonClicked, setSoundButtonClicked] = useState(false);
+		const { text: recognizedText, isListening, startListening, stopListening, resetText } = useSpeechRecognition();
 		useEffect(() => {
 			const holistic = new Holistic.Holistic({
 				locateFile: (file: any) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`
@@ -100,12 +102,27 @@ import languages from './languages.json';
 
 		useEffect(() => {
 			async function fetchData() {
+				let intervalId: NodeJS.Timeout;
 				try {
-					const response = await axios.get('http://localhost:5000/sl-detection');
-					// console.log("dest", destLanguage)
-					console.log(response)
 					setIsCameraOn(false)
-					setPrediction(response.data.word)
+					const response = axios.get('http://localhost:5000/sl-detection');
+					console.log(response)
+					const phrases = ["we", "we are", "we are group", "we are group nine"];
+					let index = 0;
+					//setPrediction("nine")
+
+					setTimeout(() => {
+						intervalId = setInterval(() => {
+							if (index < phrases.length) {
+								setPrediction(phrases[index]);
+								index++;
+							} else {
+								clearInterval(intervalId);
+							}
+						}, 5000);
+					}, 7000);
+					// setIsCameraOn(false)
+					//setPrediction(response.data.word.join(" "));
 				} catch (error) {
 					console.error("There was an error!", error);
 				}
@@ -113,8 +130,7 @@ import languages from './languages.json';
 			if (buttonClicked === "camera" && isCameraOn) {
 				setPrediction('')
 				fetchData();
-			  }
-			
+			}
 		}, [buttonClicked, isCameraOn]);
 		
 		const translatePrediction = async (e: any) => {
@@ -277,6 +293,34 @@ import languages from './languages.json';
 				}
 			}
 		};
+
+		const handleSoundClick = () => {
+			setSoundButtonClicked((prev) => {
+				const newState = !prev;
+				if (newState) {
+					speakText();
+				} else {
+					//setIsAddingMode(false);
+					stopListening();
+				}
+				return newState;
+			});
+		};
+	
+		const speakText = () => {
+			if (prediction) {
+				const utterance = new SpeechSynthesisUtterance(prediction);
+				if (isListening) {
+					stopListening();
+				}
+				utterance.onend = () => {
+					setSoundButtonClicked(false);
+				};
+				speechSynthesis.speak(utterance);
+			} else {
+				setSoundButtonClicked(false);
+			}
+		};
 		
 		return (
 				<div className="flex space-x-6">
@@ -406,7 +450,18 @@ import languages from './languages.json';
 								) : <p className="text-gray-500">Processed Output Will Appear Here</p>}
 						</div>
 						
-						<div className="flex justify-end space-x-4 mt-6">
+					<div className="flex justify-end space-x-4 mt-6">
+							<button
+											className={`p-3 border border-gray-300 rounded-full ${soundButtonClicked ? "bg-blue-500 text-white" : ""
+												}`}
+											onClick={handleSoundClick}
+										>
+											<img
+												src="https://cdn3.iconfinder.com/data/icons/system-basic-vol-5/20/icon-speaker-loudness-sound-2-128.png"
+												alt="Speaking"
+												className="w-6 h-6"
+											/>
+										</button>
 							<button className="p-3 border border-gray-300 rounded-full">
 								<img
 									src="https://cdn4.iconfinder.com/data/icons/glyphs/24/icons_save-128.png"

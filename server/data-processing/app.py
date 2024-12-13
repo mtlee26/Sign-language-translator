@@ -45,7 +45,7 @@ def sign_language_detection():
             if not ret:
                 break
             image, results = mediapipe_detection(frame, holistic)
-            image = cv2.resize(image, (520, 390))
+            image = cv2.resize(image, (450, 340))
             draw_styled_landmarks(image, results)
             keypoints = extract_keypoints(results)
 
@@ -62,7 +62,7 @@ def sign_language_detection():
                     sentence.append(actions[np.argmax(res)])
             
             cv2.imshow('Sign Language Detection', image)
-            cv2.moveWindow('Sign Language Detection', 250, 250)
+            cv2.moveWindow('Sign Language Detection', 220, 368)
             if cv2.getWindowProperty('Sign Language Detection', cv2.WND_PROP_VISIBLE) >= 1:
                 cv2.setWindowProperty('Sign Language Detection', cv2.WND_PROP_TOPMOST, 1)
             if cv2.waitKey(10) & 0xFF == ord('q'):
